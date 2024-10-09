@@ -6,6 +6,7 @@ import ProductsSection from '../components/Products/ProductsSections';
 import Carousel from '../components/UI/Carousel';
 import Banner from '../components/Banner';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 interface HomeProps {
   banners: any[];
@@ -27,6 +28,7 @@ export default function Home({
   productsWeeklyHighlight,
   user,
   menus,
+
 }: HomeProps) {
   return (
     <>
@@ -45,6 +47,7 @@ export default function Home({
         <ProductsSection products={productsWeeklyHighlight} title="Destaques da semana" />
         <Box w={"full"} bg={"#F5F5F5"} px={6}></Box>
       </Flex>
+      <Footer categories={menus}/>
     </>
   );
 }
