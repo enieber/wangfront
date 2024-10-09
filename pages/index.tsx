@@ -5,6 +5,7 @@ import FeatureImagesSection from '../components/FeatureImagesSection';
 import ProductsSection from '../components/Products/ProductsSections';
 import Carousel from '../components/UI/Carousel';
 import Banner from '../components/Banner';
+import Header from '../components/Header';
 
 interface HomeProps {
   banners: any[];
@@ -13,6 +14,8 @@ interface HomeProps {
   featuresFooter: any[];
   productsMostSold: Array<IProduct>;
   productsWeeklyHighlight: Array<IProduct>;
+  user: any;
+  menus: any[];
 }
 
 export default function Home({
@@ -22,31 +25,35 @@ export default function Home({
   featuresFooter,
   productsMostSold,
   productsWeeklyHighlight,
+  user,
+  menus,
 }: HomeProps) {
-  console.log(banners)
   return (
-    <Flex as={"main"} direction={"column"} w={"full"}>
-      <Carousel
-        full
-        items={banners}
-        Render={Banner}
-      />
-      <FeatureImagesSection items={featuresFooter} columns={1} />
-      <ProductsSection
-        products={productsWeeklyHighlight}
-        title="Destaques da semana" />
-      <FeatureImagesSection items={featuresFooter} columns={1} />
-            <ProductsSection products={productsWeeklyHighlight} title="Destaques da semana" />
-      <Box w={"full"} bg={"#F5F5F5"} px={6}></Box>
-
-    </Flex>
+    <>
+      <Header user={user} menus={menus}/>
+      <Flex as={"main"} direction={"column"} w={"full"}>
+        <Carousel
+          full
+          items={banners}
+          Render={Banner}
+        />
+        <FeatureImagesSection items={featuresFooter} columns={1} />
+        <ProductsSection
+          products={productsWeeklyHighlight}
+          title="Destaques da semana" />
+        <FeatureImagesSection items={featuresFooter} columns={1} />
+        <ProductsSection products={productsWeeklyHighlight} title="Destaques da semana" />
+        <Box w={"full"} bg={"#F5F5F5"} px={6}></Box>
+      </Flex>
+    </>
   );
 }
 
 export async function getServerSideProps() {
   try {
-    const [bannersRes, mostSoldRes, weeklyHighlightRes, videoBannerRes] =
+    const [menus, bannersRes, mostSoldRes, weeklyHighlightRes, videoBannerRes] =
       await Promise.all([
+        axios.get(`${process.env.URL}/platform/get-categories`),
         axios.get(`${process.env.URL}/platform/list-promotions`),
         axios.get(`${process.env.URL}/platform/list-most-sold`),
         axios.get(`${process.env.URL}/platform/list-weekly-product-highlight`),
@@ -64,6 +71,8 @@ export async function getServerSideProps() {
         featuresFooter: bannersRes.data.third,
         productsMostSold: mostSoldRes.data,
         productsWeeklyHighlight: weeklyHighlightRes.data,
+        menus: menus.data,
+        user: null,
       },
     };
   } catch (error) {
@@ -74,6 +83,8 @@ export async function getServerSideProps() {
         featuresFooter: [],
         productsMostSold: [],
         productsWeeklyHighlight: [],
+        menus: [],
+        user: null,
       },
     };
   }
