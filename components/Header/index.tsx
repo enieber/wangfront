@@ -59,7 +59,6 @@ const useCart = () => {
 export default function Header({ menus, user }: any) {
 //  const { login, logout, error, user, isLoading } = useContext(AuthContext);
   const [mobile] = useMediaQuery('(max-width: 400px)');
-  console.log(menus)
 
   return (
     <Flex as={'header'} direction={'column'} w={'full'}>
