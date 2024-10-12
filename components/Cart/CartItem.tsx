@@ -37,7 +37,7 @@ const [mobile] = useMediaQuery('(max-width: 430px)');
           <Flex align={'center'} gap={2} w={'80%'} direction={mobile ? 'column' : 'row'}>
             <Image src={product.product_image[0].url} w={24} h={24} alt={product.title} />
             <Flex flexDir={'column'} gap={0} width={'50%'}>
-              <Link href={'#'} color={'gray.800'} _hover={{ textDecoration: 'underline' }}>
+              <Link href={`/produto/${product.id}`} color={'gray.800'} _hover={{ textDecoration: 'underline' }}>
                 <Text w={mobile ? '100%' : 'auto'} fontSize={'xs'} isTruncated>
                   {product.title}
                 </Text>

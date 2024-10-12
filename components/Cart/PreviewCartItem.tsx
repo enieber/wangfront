@@ -20,7 +20,7 @@ export default function PreviewCartItem({ product, remove }: any) {
           <Flex align={'center'} gap={2} w={'80%'}>
             <Image src={product.product_image[0].url} w={16} h={16} alt={product.title} />
             <Flex flexDir={'column'} gap={0} width={'50%'}>
-              <Link href={'#'} color={'gray.800'} _hover={{ textDecoration: 'underline' }}>
+              <Link href={`/produto/${product.id}`} color={'gray.800'} _hover={{ textDecoration: 'underline' }}>
                 <Text fontSize={'xs'} isTruncated>
                   {product.title}
                 </Text>
