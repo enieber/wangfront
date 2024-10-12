@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore
 import ReactStars from 'react-rating-stars-component';
 import generateFixedLengthUniqueNumber from '../../helpers/uuid';
 
@@ -10,7 +11,7 @@ export default function ReviewStars({
   activeColor = '#ffd700',
   color = '#f0f0f0',
   edit = false
-}) {
+}: any) {
   return (
     <ReactStars
       key={generateFixedLengthUniqueNumber(10)}

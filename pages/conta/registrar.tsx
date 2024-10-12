@@ -29,6 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
+// @ts-ignore
 import InputMask from "react-input-mask";
 import { useEffect, useState, useContext } from "react";
 import { BsCart3, BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
@@ -122,6 +123,27 @@ function RegisterContent(props: any) {
   });
   const toast = useToast();
 
+  function createAccount(values: any) {
+    register(values)
+      .then((res: any) => {
+        toast({
+          title: "Conta Criada",
+          description: "faça login e continue a usar",
+          status: "success",
+        });
+        router.push("/conta/login");
+      })
+      .catch((err: any) => {
+        toast({
+          title: "Tente novamente",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  }
+
   async function searchAddressInfo(cep: any, setField: any) {
     setLoading(true);
     try {
@@ -205,6 +227,7 @@ function RegisterContent(props: any) {
               estado: "",
               birthDate: "",
             }}
+            onSubmit={(values) => createAccount(values)}
             validationSchema={RegisterSchema}
           >
             {({ values, errors, touched }) => (
@@ -752,24 +775,7 @@ function RegisterContent(props: any) {
                         isLoading={isLoading}
                         type="submit"
                         onClick={() => {
-                          register(values)
-                          .then((res: any) => {
-                            toast({
-                              title: "Conta Criada",
-                              description: "faça login e continue a usar",
-                              status: "success",
-                            });
-                            router.push("/conta/login");
-                          })
-                          .catch((err: any) => {
-                            toast({
-                              title: "Tente novamente",
-                              description: err.message,
-                              status: "error",
-                              duration: 9000,
-                              isClosable: true,
-                            });
-                          });
+                          createAccount(values)
                         }}
                         _hover={{
                           bg: "primary.600",

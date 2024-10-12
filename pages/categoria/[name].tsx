@@ -20,16 +20,18 @@ interface CategoriaProps {
   categories: any[];
   products: any[];
   user: any;
+  sort: string,
 }
 
 export default function Categoria({
   categories,
   products,
   user,
+  sort,
 }: CategoriaProps) {
   const [mobile] = useMediaQuery("(max-width: 400px)");
   const sortByPrice = 2;
-
+  
   return (
     <Layout user={user} menus={categories}>
       <Flex as={"main"} direction={"column"} w={"full"} py={10}>
@@ -50,7 +52,7 @@ export default function Categoria({
                 </Text>
                 <Flex flexDir={"column"} gap={2}>
                   {categories ? (
-                    categories.map((item: IMenu, index: number) => (
+                    categories.map((item: any, index: number) => (
                       <Container key={index}>
                         <Link
                           key={index}
@@ -63,7 +65,7 @@ export default function Categoria({
                         </Link>
                         {item.children &&
                           item.children.map(
-                            (subItem: IMenuItem, subIndex: number) => (
+                            (subItem: any, subIndex: number) => (
                               <Link
                                 key={subIndex}
                                 href={`/categoria/${subItem.name.toLowerCase()}`}
@@ -88,14 +90,14 @@ export default function Categoria({
                 <Stack align="center" direction="row">
                   <Select
                     icon={
-                      sortByPrice === 1 ? <ArrowUpIcon /> : <ArrowDownIcon />
+                      sort === 'up' ? <ArrowUpIcon /> : <ArrowDownIcon />
                     }
-                    value={sortByPrice}
+                    value={sort}
                     onChange={() => {}}
                     size="md"
                   >
                     <option value={1}>Maior valor</option>
-                    <option value={2} selected>
+                    <option value={2}>
                       Menor valor
                     </option>
                   </Select>
@@ -140,13 +142,35 @@ export async function getServerSideProps(context: any) {
   let user = null;
   try {
     const product_categories = context.params.name;
-    const [categories, products] = await Promise.all([
+    const sort = context.query.sort;
+    const [categories, productsRes] = await Promise.all([
       Api.get(`${process.env.URL}/platform/get-categories`),
       Api.post(`${process.env.URL}/platform/list-products`, {
         product_categories,
       }),
     ]);
 
+    const products = productsRes.data.sort((a:any, b: any) => {
+      if (sort === 'up') {
+        if (parseFloat(a.price) < parseFloat(b.price)) {
+          return 1;
+        }
+        
+        if (parseFloat(a.price) > parseFloat(b.price)) {
+          return -1
+        }
+        return 0
+      }
+      if (parseFloat(a.price) > parseFloat(b.price)) {
+        return 1;
+      }
+      
+      if (parseFloat(a.price) < parseFloat(b.price)) {
+        return -1
+      }
+      return 0
+    })
+  
     try {
       const res = await aboutMe(context);
       user = res.data;
@@ -157,7 +181,8 @@ export async function getServerSideProps(context: any) {
     return {
       props: {
         categories: categories.data,
-        products: products.data,
+        products,
+        sort,
         user,
       },
     };
@@ -165,6 +190,7 @@ export async function getServerSideProps(context: any) {
     console.log(error);
     return {
       props: {
+        sort:'up',
         categories: [],
         products: [],
         user,

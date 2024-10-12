@@ -8,12 +8,12 @@ interface HomeProps {
   menus: any[];
 }
 
-export default function Conta({ user, menus }: HomeProps) {
+export default function Favorito({ user, menus }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <h1>Conta</h1>
+          <h1>Favproto</h1>
         </Box>
       </Box>
     </Layout>

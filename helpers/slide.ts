@@ -1,4 +1,4 @@
-export function backIndex(length, index) {
+export function backIndex(length: number, index: number) {
  if (index == 0) {
   return length -1
  }
@@ -6,7 +6,7 @@ export function backIndex(length, index) {
  return index -1 
 }
 
-export function nextIndex(length, index) {
+export function nextIndex(length: number, index: number) {
   return (index + 1) % length
 }
 

@@ -16,6 +16,9 @@ export async function aboutMe(context: any) {
   const cookies = req.headers.cookie || '';
   const match = cookies.match(/authToken=([^;]+)/);
   const token = match ? match[1] : null;
+  if (!token) {
+    throw new Error('user not authed');
+  }
   const data = await Api.get(`${process.env.URL}/platform/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
