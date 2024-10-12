@@ -3,17 +3,17 @@ import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Api, { aboutMe } from "../../services/api";
 
-interface HomeProps {
+interface FavoritosProps {
   user: any;
   menus: any[];
 }
 
-export default function Favorito({ user, menus }: HomeProps) {
+export default function Favoritos({ user, menus }: FavoritosProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <h1>Favproto</h1>
+          <h1>Favoritos</h1>
         </Box>
       </Box>
     </Layout>

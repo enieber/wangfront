@@ -5,7 +5,11 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [totalCart, setTotalCart] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
   const [off, setOff] = useState(0);
+  const [delivery, setDelivery] = useState({
+    price: 0,
+  });
 
   useEffect(() => {
     let mount = true;
@@ -18,6 +22,7 @@ export const CartProvider = ({ children }) => {
           (acc, item) => acc + item.price * item.quantity,
           0
         );
+        setSubTotal(total)
         setTotalCart(total);
       }
     }
@@ -33,10 +38,13 @@ export const CartProvider = ({ children }) => {
         (acc, item) => acc + item.price * item.quantity,
         0
       );
-      setTotalCart(total);
+      setSubTotal(total);
+      const totalWithDelivery = parseFloat(delivery.price) + total;
+      setTotalCart(totalWithDelivery);
       const listString = JSON.stringify(list);
       localStorage.setItem("cart", listString);
     } else {
+      setSubTotal(0);
       setTotalCart(0);
       const listString = JSON.stringify([]);
       localStorage.setItem("cart", listString);
@@ -92,13 +100,19 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (productId) => {
+  function removeFromCart(productId) {
     setCartItems((prevItems) => {
       const list = prevItems.filter((item) => item.id !== productId);
       updateList(list);
       return list;
     });
   };
+
+  function addShipping(shiping) {    
+    setDelivery(shiping);
+    const totalWithDelivery = parseFloat(shiping.price) + totalCart;
+    setTotalCart(totalWithDelivery);
+  }
 
   const clearCart = () => {
     updateList([]);
@@ -115,6 +129,9 @@ export const CartProvider = ({ children }) => {
         increment,
         setQuantity,
         clearCart,
+        addShipping,
+        subTotal,
+        delivery,
         totalCart,
         off,
       }}

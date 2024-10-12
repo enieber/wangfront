@@ -1,4 +1,3 @@
-import axios from "axios";
 import FeatureImagesSection from '../components/FeatureImagesSection';
 import ProductsSection from '../components/Products/ProductsSections';
 import Carousel from '../components/UI/Carousel';
