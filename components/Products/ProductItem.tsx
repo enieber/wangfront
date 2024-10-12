@@ -3,12 +3,12 @@ import { Button, Flex, Image, Link, Text } from '@chakra-ui/react';
 import React from 'react';
 import ReviewStars from '../UI/ReviewStart';
 import { formatMoney } from '../../helpers/money';
-//import { useCart } from '../../../context/CartContext';
+import { useCart } from '../../context/CartContext';
 
-function addToCart() {}
 
-export default function ProductItem(props) {
-//  const { addToCart } = useCart();
+export default function ProductItem(props: any) {
+ const { addToCart } = useCart();
+
   return (
     <Flex key={props.id} flexDir={'column'} p={4}>
       <Flex

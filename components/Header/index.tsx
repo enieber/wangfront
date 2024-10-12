@@ -38,26 +38,11 @@ import { LegacyRef, RefObject, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import QuickCart from '../Cart/QuickCart';
+import { useAuth } from '../../context/AuthContext';
 
-function login() {}
-function logout() {}
-const isLoading = false;
 
-const useCart = () => {
-  function addToCart() {}
-  const cartItems = []
-  const totalCart = 0
-  function removeFromCart() {}
-  return {
-    addToCart,
-    cartItems,
-    totalCart,
-    removeFromCart,
-  }
-}
-
-export default function Header({ menus, user }: any) {
-//  const { login, logout, error, user, isLoading } = useContext(AuthContext);
+export default function Header({ menus, user }: any) {  
+  const { login, logout, error, isLoading } = useAuth();
   const [mobile] = useMediaQuery('(max-width: 400px)');
 
   return (
@@ -65,15 +50,13 @@ export default function Header({ menus, user }: any) {
       {!!mobile && <MenuMobile menuItems={menus} login={login} user={user} isLoading={isLoading} />}
       {!mobile && <PrimaryMenu menuItems={menus} login={login} logout={logout} user={user} isLoading={isLoading} />}
 
-      {!mobile && menus.length == 0 && <Skeleton height={'40px'}></Skeleton>}
-
       {!mobile && <SecondaryMenu menuItems={menus} login={login} logout={logout} user={user} isLoading={isLoading} />}
     </Flex>
   );
 }
 
 interface MenuProps {
-  menuItems: Array<IMenu>;
+  menuItems: Array<any>;
   login: any;
   user: any;
   isLoading: boolean;
@@ -96,7 +79,7 @@ const MenuMobile = (props: MenuProps) => {
     router.push('/conta/login');
   };
 
-  useEffect(() => {}, []);
+  console.log(user)
 
   return (
     <Flex my={2}>
@@ -159,7 +142,7 @@ const MenuMobile = (props: MenuProps) => {
                 <Text fontWeight={'600'} fontSize={'sm'}>
                   Categorias
                 </Text>
-                {menuItems.map((item: IMenu, index: number) => (
+                {menuItems && menuItems.map((item: any, index: number) => (
                   <Flex key={index} direction={'column'}>
                     <Link
                       key={index}
@@ -172,7 +155,7 @@ const MenuMobile = (props: MenuProps) => {
                     >
                       {item.name}
                     </Link>
-                    {item.children.map((subItem: IMenuItem, subIndex: number) => (
+                    {item.children.map((subItem: any, subIndex: number) => (
                       <Link
                         key={subIndex}
                         href={'/categoria/' + subItem.name.toLowerCase()}
@@ -201,7 +184,7 @@ const MenuMobile = (props: MenuProps) => {
           <Flex justify={'flex-end'} gap={4} align={'center'}>
             <FaRegUserCircle onClick={() => handleGoToLogin()} size={24} />
             <FiSearch  size={24} />
-            <QuickCart useCart={useCart}/>
+            <QuickCart />
           </Flex>
         </Flex>
       </Container>
@@ -296,7 +279,7 @@ const PrimaryMenu = (props: MenuProps) => {
                 Login
               </Link>
             </Flex>
-            <QuickCart useCart={useCart}/>
+            <QuickCart />
           </Flex>
         </Container>
       </Flex>
@@ -416,7 +399,7 @@ const PrimaryMenu = (props: MenuProps) => {
               )}
             </Box>
           </Flex>
-          <QuickCart useCart={useCart}/>
+          <QuickCart />
         </Flex>
       </Container>
     </Flex>
@@ -450,7 +433,7 @@ const SecondaryMenu = (props: MenuProps) => {
     >
       <Container maxW={'container.xl'}>
         <Flex justify={'center'} align={'center'}>
-          {menuItems.map((item: any, index: number) => (
+          {menuItems && menuItems.map((item: any, index: number) => (
             <Container key={index}>
               {item.children.length >= 1 ? (
                 <Menu key={index}>
@@ -502,7 +485,7 @@ const SecondaryMenu = (props: MenuProps) => {
               )}
             </Container>
           ))}
-          {menuItems.length === 0 && <Skeleton height="20px" />}
+          {menuItems && menuItems.length === 0 && <Skeleton height="20px" />}
         </Flex>
       </Container>
     </Flex>

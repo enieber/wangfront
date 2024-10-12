@@ -19,17 +19,30 @@ import { BsCart3 } from 'react-icons/bs';
 import PreviewCartItem from './PreviewCartItem';
 import React from 'react';
 import { formatMoney } from '../../helpers/money';
-//import { useCart } from '../../../context/CartContext';
+import { useCart } from '../../context/CartContext';
+
+
+// const useCart = () => {
+//   function addToCart() {}
+//   const cartItems = [];
+//   const totalCart = 0
+//   function removeFromCart() {}
+//   return {
+//     addToCart,
+//     cartItems,
+//     totalCart,
+//     removeFromCart,
+//   }
+// }
 
 export default function QuickCart({
   size,
   colorScheme,
   is_button = false,
   product,
-  useCart,
 }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { addToCart, cartItems, totalCart, removeFromCart } = useCart();
+  const { cartItems, totalCart, removeFromCart } = useCart();
 
   return (
     <>

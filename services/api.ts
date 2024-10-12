@@ -1,7 +1,9 @@
+'use server'
+
 import axios from "axios";
 import { cookies } from "next/headers";
 
-const api = axios.create({
+const Api = axios.create({
   baseURL: process.env.URL,
   headers: {
     "Cache-Control": "public, max-age=3600, stale-while-revalidate=59",
@@ -9,21 +11,17 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use(
-  (config: any) => {
-    if (!config.url.includes("login") || !config.url.includes("register")) {
-      const storeCookie = cookies();
-      const token = storeCookie.get("auth-token");
-      if (token?.value) {
-        config.headers.Authorization = `Bearer ${token.value}`;
-      }
-    }
+export async function aboutMe(context: any) {
+  const { req } = context;
+  const cookies = req.headers.cookie || '';
+  const match = cookies.match(/authToken=([^;]+)/);
+  const token = match ? match[1] : null;
+  const data = await Api.get(`${process.env.URL}/platform/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data
+}
 
-    return config;
-  },
-  (err) => {
-    return Promise.reject(err);
-  }
-);
-
-export default api;
+export default Api;

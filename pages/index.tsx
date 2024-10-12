@@ -1,20 +1,19 @@
 import axios from "axios";
-import { Box, Flex } from "@chakra-ui/react";
-
 import FeatureImagesSection from '../components/FeatureImagesSection';
 import ProductsSection from '../components/Products/ProductsSections';
 import Carousel from '../components/UI/Carousel';
 import Banner from '../components/Banner';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Layout from "../components/Layout";
+import Api, { aboutMe } from "../services/api";
 
 interface HomeProps {
   banners: any[];
   videoBanner: { url: string };
   features: any[];
   featuresFooter: any[];
-  productsMostSold: Array<IProduct>;
-  productsWeeklyHighlight: Array<IProduct>;
+  productsMostSold: Array<any>;
+  productsWeeklyHighlight: Array<any>;
   user: any;
   menus: any[];
 }
@@ -31,10 +30,8 @@ export default function Home({
 
 }: HomeProps) {
   return (
-    <>
-      <Header user={user} menus={menus}/>
-      <Flex as={"main"} direction={"column"} w={"full"}>
-        <Carousel
+    <Layout menus={menus} user={user}>
+      <Carousel
           full
           items={banners}
           Render={Banner}
@@ -45,27 +42,29 @@ export default function Home({
           title="Destaques da semana" />
         <FeatureImagesSection items={featuresFooter} columns={1} />
         <ProductsSection products={productsWeeklyHighlight} title="Destaques da semana" />
-        <Box w={"full"} bg={"#F5F5F5"} px={6}></Box>
-      </Flex>
-      <Footer categories={menus}/>
-    </>
+      <Header user={user} menus={menus}/>      
+    </Layout>
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
+  let user= null;
   try {
-    const [menus, bannersRes, mostSoldRes, weeklyHighlightRes, videoBannerRes] =
+    const [menus, bannersRes, mostSoldRes, weeklyHighlightRes] =
       await Promise.all([
-        axios.get(`${process.env.URL}/platform/get-categories`),
-        axios.get(`${process.env.URL}/platform/list-promotions`),
-        axios.get(`${process.env.URL}/platform/list-most-sold`),
-        axios.get(`${process.env.URL}/platform/list-weekly-product-highlight`),
+        Api.get(`${process.env.URL}/platform/get-categories`),
+        Api.get(`${process.env.URL}/platform/list-promotions`),
+        Api.get(`${process.env.URL}/platform/list-most-sold`),
+        Api.get(`${process.env.URL}/platform/list-weekly-product-highlight`),
       ]);
 
-    // Implementação de cache no lado do servidor
-    const headers = {
-      "Cache-Control": "public, s-maxage=10, stale-while-revalidate=59",
-    };
+    try {
+      const res = await aboutMe(context);
+      user = res.data
+    } catch (err) {
+      console.log(err)
+      user = null;
+    }
 
     return {
       props: {
@@ -75,7 +74,7 @@ export async function getServerSideProps() {
         productsMostSold: mostSoldRes.data,
         productsWeeklyHighlight: weeklyHighlightRes.data,
         menus: menus.data,
-        user: null,
+        user,
       },
     };
   } catch (error) {
@@ -87,7 +86,7 @@ export async function getServerSideProps() {
         productsMostSold: [],
         productsWeeklyHighlight: [],
         menus: [],
-        user: null,
+        user,
       },
     };
   }
