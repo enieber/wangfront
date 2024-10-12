@@ -9,6 +9,8 @@ import {
   FormControl,
   Heading,
   Image,
+  Input,
+  Link,
   Text,
   Textarea,
   useMediaQuery,
@@ -23,28 +25,45 @@ import ReviewStars from "../../components/UI/ReviewStart";
 import QuickCart from "../../components/Cart/QuickCart";
 import ReviewCard from "../../components/ReviewCard";
 import Api, { aboutMe } from "../../services/api";
+import ShippingList from "../../components/ShippingList";
+import { useState } from "react";
+import { useCart } from "../../context/CartContext";
 
-interface CategoriaProps {
-  categories: any[];
-  products: any[];
-  product: any;
-  user: any;
-}
-
-export default function Categoria({
-  categories,
-  products,
-  product,
-  user,
-}: CategoriaProps) {
+function ProductContent({ products, product }: any) {
   const [mobile] = useMediaQuery("(max-width: 400px)");
+  const { addToCart } = useCart();
+  const [cupom, setCupom] = useState("");
+  const [showCupomField, setShowCupomField] = useState(false);
+  const [shippingOptions, setShippingOptions] = useState([]);
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [zipCode, setZipCode] = useState("");
+  const [showZipCodeField, setShowZipCodeField] = useState(false);
+
   const sortByPrice = 2;
   const currentTumbnailUrl = null;
-
   const total = parseFloat(product?.price) + parseFloat(product.discount);
 
+  function calculateDelivery(code: string) {
+    setShippingLoading(true);
+    axios
+      .get(`/api/delivery/`, {
+        params: {
+          cep: code,
+        },
+      })
+      .then((res) => {
+        setShippingLoading(false);
+        setShippingOptions(res.data);
+      })
+      .catch((err) => {
+        setShippingLoading(false);
+        setShippingOptions([]);
+        console.log(err);
+      });
+  }
+
   return (
-    <Layout user={user} menus={categories}>
+    <>
       <Flex as={"main"} direction={"column"} w={"full"} py={10}>
         <Container maxW={"container.xl"}>
           <Flex direction={mobile ? "column" : "row"} w="full" gap={20}>
@@ -155,24 +174,71 @@ export default function Categoria({
                   via Pix
                 </Text>
               </Flex>
+
               <Flex
-                w={"full"}
-                justifyContent={mobile ? "center" : "flex-start"}
+                flexDir={"column"}
+                mb={2}
+                gap={2}
+                borderBottom={"1px solid"}
+                borderBottomColor={"gray.200"}
+                pb={2}
               >
-                <QuickCart is_button={true} product={product} />
+                <Flex justify="space-between">
+                  <Text
+                    fontSize="sm"
+                    color={"gray.600"}
+                    display="flex"
+                    alignItems="center"
+                  >
+                    Frete
+                  </Text>
+                  <Link
+                    fontSize="sm"
+                    color="blue.500"
+                    onClick={() => setShowZipCodeField(!showZipCodeField)}
+                  >
+                    {showZipCodeField ? "Fechar" : "Calcular"}
+                  </Link>
+                </Flex>
+
+                {showZipCodeField && (
+                  <Flex gap={2} w={"full"}>
+                    <Input
+                      type="text"
+                      placeholder="Digite seu CEP"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                    />
+                    <Button
+                      onClick={() => {
+                        calculateDelivery(zipCode);
+                      }}
+                    >
+                      Calcular
+                    </Button>
+                  </Flex>
+                )}
+
+                <ShippingList
+                  shippingLoading={shippingLoading}
+                  shippingOptions={shippingOptions}
+                />
               </Flex>
               <Flex
-                w={"full"}
-                justifyContent={mobile ? "center" : "flex-start"}
                 flexDir={"column"}
-                alignItems={mobile ? "center" : "flex-start"}
+                mb={2}
+                gap={2}
+                borderBottom={"1px solid"}
+                borderBottomColor={"gray.200"}
+                pb={2}
               >
-                <Text fontSize={"xs"}>
-                  Quantidade disponível:{" "}
-                  <Text as="span" fontWeight={"bold"} color="primary.500">
-                    {3} unidades
-                  </Text>
-                </Text>
+                <Button
+                  aria-label={"Adicionar ao carrinho"}
+                  onClick={() => addToCart(product)}
+                  px={20}
+                >
+                  Adicionar ao Carrinho
+                </Button>
               </Flex>
             </Flex>
           </Flex>
@@ -350,10 +416,22 @@ export default function Categoria({
           </Flex>
         </Container>
       </Flex>
-    </Layout>
+    </>
   );
 }
 
+export default function ProductPage({
+  user,
+  categories,
+  products,
+  product,
+}: any) {
+  return (
+    <Layout user={user} menus={categories}>
+      <ProductContent products={products} product={product} />
+    </Layout>
+  );
+}
 export async function getServerSideProps(context: any) {
   let user = null;
   try {

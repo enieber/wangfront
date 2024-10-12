@@ -20,6 +20,7 @@ const ShippingList = ({ shippingOptions, shippingLoading, selectValue }: any) =>
     selectValue(shippingOptions.find((item: any )=> item.id ==value));
   }
 
+
   if (shippingLoading) {
     return (
       <SimpleGrid columns={1} row={1} gap={6}>
@@ -28,6 +29,57 @@ const ShippingList = ({ shippingOptions, shippingLoading, selectValue }: any) =>
         <Skeleton height={50} width={250}></Skeleton>
       </SimpleGrid>
     );
+  }
+
+  if (!selectValue) {
+    return (
+        <Stack spacing={4}>
+            {shippingOptions
+              .filter((item: any) => !item.error)
+              .map((option: any) => (
+                <Box
+                  key={option.id}
+                  p={5}
+                  shadow="md"
+                  borderWidth="1px"
+                  borderRadius="md"
+                >
+                  <Stack
+                    direction="row"
+                    align="center"
+                    justify="space-around"
+                    my={5}
+                  >
+                    <Image
+                      w={50}
+                      height={30}
+                      boxSize={50}
+                      src={option.company.picture}
+                      alt={option.company.name}
+                    />
+                  </Stack>
+    
+                 
+                <Heading size="md">{option.name}</Heading>
+                  
+    
+                  {option.error ? (
+                    <Text color="red.500">{option.error}</Text>
+                  ) : (
+                    <>
+                      <Text>
+                        Preço: {option.currency} {option.price}
+                      </Text>
+                      <Text>
+                        Tempo de Entrega: {option.delivery_range.min} -{" "}
+                        {option.delivery_range.max} dias
+                      </Text>
+                    </>
+                  )}
+                </Box>
+              ))}
+        </Stack>
+      );
   }
 
   return (
