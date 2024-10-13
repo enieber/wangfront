@@ -34,20 +34,7 @@ export default function Favoritos() {
               >
                 {user.name}
               </Text>
-              {/* <Flex flexDir={"column"} gap={2}>
-                {user &&
-                  user.minhaConta.map((item) => (
-                    <Link
-                      key={item}
-                      href={`#`}
-                      fontSize={"sm"}
-                      color={"gray.800"}
-                      _hover={{ textDecoration: "underline" }}
-                    >
-                      <Text>{item}</Text>
-                    </Link>
-                  ))}
-              </Flex> */}
+             
             </Flex>
           </Flex>
           <Flex flexDir={"column"} gap={4} w={"80%"}>
@@ -89,7 +76,7 @@ export default function Favoritos() {
                     >
                       <Flex align={"center"} gap={2}>
                         <Image
-                          src={product.imageUrl}
+                          src={product.product_image[0].url}
                           w={16}
                           h={16}
                           alt={product.title}

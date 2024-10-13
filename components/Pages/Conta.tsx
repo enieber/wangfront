@@ -20,6 +20,7 @@ import {
   Link,
   useMediaQuery,
   Input,
+  Heading,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { FaRegUserCircle, FaRegStar } from "react-icons/fa";
@@ -50,18 +51,11 @@ export default function Conta() {
       </Flex>
       <SimpleGrid spacing={10} templateColumns="1fr 4fr">
         <Card gap={5} p={10}>
-          <Highlight
-            query="spotlight"
-            styles={{ px: "1", py: "1", bg: "orange.100" }}
-          >
-            {user?.name ? user.name : ""}
-          </Highlight>
-          <Button>
-            <Link href="/conta">Minha Conta</Link>
-          </Button>
-          <Button>
-            <Link href="/conta/senha">Alterar Senha</Link>
-          </Button>
+          <Heading size="md">{user?.name ? user.name : ""}</Heading>
+
+          <Link href="/conta">Minha Conta</Link>
+          <Link href="/conta/endereco">Minha endereço</Link>
+          <Link href="/conta/senha">Alterar Senha</Link>
         </Card>
         <Card>
           <Tabs variant="soft-rounded">
@@ -123,15 +117,15 @@ export default function Conta() {
                                   Nome:
                                 </Text>
                                 <Field name="name">
-                                {({ field }) => (
-                                 <Input
-                                     { ...field}
+                                  {({ field }) => (
+                                    <Input
+                                      {...field}
                                       value={field.value}
                                       onChange={handleChange}
-                                      disabled={isNotEdit}                                      
+                                      disabled={isNotEdit}
                                       placeholder="Digite seu nome"
                                     />
-                                )}
+                                  )}
                                 </Field>
                               </Container>
 
@@ -188,17 +182,15 @@ export default function Conta() {
                                   Email:
                                 </Text>
                                 <Field name="email">
-                                {({ field }) => (
-                                 <Input
-                                 
-                                     { ...field}
-                                     disabled={isNotEdit}
+                                  {({ field }) => (
+                                    <Input
+                                      {...field}
+                                      disabled={isNotEdit}
                                       value={field.value}
                                       onChange={handleChange}
                                       placeholder="Digite seu email"
                                     />
-                                )}
-                                
+                                  )}
                                 </Field>
                               </Container>
 
@@ -209,14 +201,13 @@ export default function Conta() {
                                 <Field name="phone_number">
                                   {({ field }) => (
                                     <InputMask
-                                    disabled={isNotEdit}                                      
+                                      disabled={isNotEdit}
                                       mask="(99) 99999-9999"
                                       value={field.value}
                                       onChange={handleChange}
                                     >
                                       {(inputProps: any) => (
                                         <Input
-                                        
                                           {...inputProps}
                                           type="text"
                                           placeholder="(XX) XXXXX-XXXX"
@@ -240,7 +231,7 @@ export default function Conta() {
                                 enableNotEdit(isNotEdit!);
                               }}
                             >
-                              {isNotEdit ? 'Editar' :  'Cancelar'}
+                              {isNotEdit ? "Editar" : "Cancelar"}
                             </Button>
                           </Flex>
                         </Form>
@@ -265,7 +256,7 @@ export default function Conta() {
                     alignItems={"center"}
                     justifyContent={"center"}
                   >
-                   <Favoritos />
+                    <Favoritos />
                   </Flex>
                 </TabPanel>
               </TabPanels>
