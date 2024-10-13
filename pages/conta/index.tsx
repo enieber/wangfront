@@ -2,18 +2,22 @@ import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Api, { aboutMe } from "../../services/api";
+import dynamic from 'next/dynamic';
+
+const Conta = dynamic(() => import('../../components/Pages/Conta'), { ssr: false });
+
 
 interface HomeProps {
   user: any;
   menus: any[];
 }
 
-export default function Conta({ user, menus }: HomeProps) {
+export default function ContaPage({ user, menus }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <h1>Conta</h1>
+          <Conta />
         </Box>
       </Box>
     </Layout>
