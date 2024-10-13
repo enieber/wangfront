@@ -3,6 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Api, { aboutMe } from "../../services/api";
 import dynamic from 'next/dynamic';
+import { getData } from "../api/states";
 
 const Endereco = dynamic(() => import('../../components/Pages/Endereco'), { ssr: false });
 
@@ -10,17 +11,19 @@ const Endereco = dynamic(() => import('../../components/Pages/Endereco'), { ssr:
 interface HomeProps {
   user: any;
   menus: any[];
+  states: any[];
 }
 
 export default function Login({
   user,
   menus,
+  states
 }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <Endereco />
+          <Endereco states={states} />
         </Box>
       </Box>
     </Layout>
@@ -30,9 +33,10 @@ export default function Login({
 export async function getServerSideProps(context: any) {
   let user = null
   try {
-    const [menus] =
+    const [menus, states] =
       await Promise.all([
         Api.get(`${process.env.URL}/platform/get-categories`),
+        getData(),
       ]);
 
       try {
@@ -47,6 +51,7 @@ export async function getServerSideProps(context: any) {
       props: {        
         menus: menus.data,
         user,
+        states: states.data
       },
     };
   } catch (error) {
@@ -54,6 +59,7 @@ export async function getServerSideProps(context: any) {
       props: {        
         menus: [],
         user,
+        states: []
       },
     };
   }
