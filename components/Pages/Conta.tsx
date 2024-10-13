@@ -28,6 +28,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field } from "formik";
 import InputMask from "react-input-mask";
+import Favoritos from "./Favorito";
 
 export default function Conta() {
   const [mobile] = useMediaQuery("(max-width: 400px)");
@@ -264,9 +265,7 @@ export default function Conta() {
                     alignItems={"center"}
                     justifyContent={"center"}
                   >
-                    <Text fontSize={"sm"} fontWeight={"400"}>
-                      Nenhum item salvo como favorito
-                    </Text>
+                   <Favoritos />
                   </Flex>
                 </TabPanel>
               </TabPanels>

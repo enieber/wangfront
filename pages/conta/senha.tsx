@@ -2,6 +2,10 @@ import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Api, { aboutMe } from "../../services/api";
+import dynamic from 'next/dynamic';
+
+const Password = dynamic(() => import('../../components/Pages/Password'), { ssr: false });
+
 
 interface HomeProps {
   user: any;
@@ -16,7 +20,7 @@ export default function Login({
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <h1>Login</h1>
+          <Password />
         </Box>
       </Box>
     </Layout>

@@ -2,18 +2,22 @@ import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Api, { aboutMe } from "../../services/api";
+import dynamic from 'next/dynamic';
 
 interface FavoritosProps {
   user: any;
   menus: any[];
 }
 
-export default function Favoritos({ user, menus }: FavoritosProps) {
+const Favoritos = dynamic(() => import('../../components/Pages/Favorito'), { ssr: false });
+
+
+export default function FavoritoPage({ user, menus }: FavoritosProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <h1>Favoritos</h1>
+          <Favoritos />
         </Box>
       </Box>
     </Layout>
