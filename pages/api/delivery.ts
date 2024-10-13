@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Api from "../../services/api";
+import axios from "axios";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,8 +10,8 @@ export default async function handler(
     if (req.method === "GET") {
       console.log('query', req.query.cep)
       const { cep } = req.query;
-      const response = await Api.post(
-        `/platform/get-delivery-value/${cep}`);
+      const response = await axios.post(
+        `${process.env.URL_API}/platform/get-delivery-value/${cep}`);
       const data = response.data;
       res.status(200).json(data);
     } else {

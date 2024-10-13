@@ -42,8 +42,12 @@ import { useAuth } from '../../context/AuthContext';
 
 
 export default function Header({ menus, user }: any) {  
-  const { login, logout, error, isLoading } = useAuth();
+  const { login, logout, setUser, isLoading } = useAuth();
   const [mobile] = useMediaQuery('(max-width: 400px)');
+
+  useEffect(() => {
+    setUser(user)
+  }, [])
 
   return (
     <Flex as={'header'} direction={'column'} w={'full'}>
@@ -99,7 +103,7 @@ const MenuMobile = (props: MenuProps) => {
                   colorScheme="black"
                   _hover={{ underline: 'none', color: 'primary.700' }}
                 >
-                  Minha conta
+                  {user.name.split(' ')[0]}
                 </Button>
               ) : (
                 <Button
@@ -363,7 +367,7 @@ const PrimaryMenu = (props: MenuProps) => {
                       colorScheme="black"
                       _hover={{ underline: 'none', color: 'primary.600' }}
                     >
-                      Minha conta
+                      {user.name.split(' ')[0]}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent w="200px">
@@ -371,7 +375,7 @@ const PrimaryMenu = (props: MenuProps) => {
                     <PopoverBody>
                       <Flex flexDir={'column'} p={2} gap={3}>
                         <Link href="/conta" _hover={{ underline: 'none', color: 'primary.600' }}>
-                          {user.email}
+                          Minha Conta
                         </Link>
                         <Button
                           onClick={() => {

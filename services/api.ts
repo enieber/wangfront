@@ -12,22 +12,6 @@ const Api = axios.create({
   },
 });
 
-Api.interceptors.request.use(
-  (config: any) => {
-    if (!config.url.includes("login") || !config.url.includes("register")) {            
-      console.log("request token: ", config.cookie          )
-      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsImlhdCI6MTcyODc1MTU1NywiZXhwIjoxNzI4ODM3OTU3fQ.r7IR068sdOmm2iw1mgl0LPYF4ICQj5a0opGTUrg-aI0";
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  (err) => {
-    return Promise.reject(err);
-  }
-);
-
 export async function aboutMe(context: any) {
   const { req } = context;
   const cookies = req.headers.cookie || '';
@@ -41,6 +25,7 @@ export async function aboutMe(context: any) {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(data)
   return data
 }
 

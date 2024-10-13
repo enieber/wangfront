@@ -9,6 +9,7 @@ import { theme } from "./theme";
 
 export default function Layout(props: any) {
   const { menus, user, children } = props;
+  
   return (
     <ChakraProvider theme={theme}>
     <AuthProvider>

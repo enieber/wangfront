@@ -16,13 +16,15 @@ import {
 import Layout from "../components/Layout";
 import Api, { aboutMe } from "../services/api";
 import { useCart } from "../context/CartContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CartItem from "../components/Cart/CartItem";
 import { formatMoney } from "../helpers/money";
 import ShippingList from "../components/ShippingList";
+import { useAuth } from "../context/AuthContext";
 
 function CarrinhoContent() {
   const [mobile] = useMediaQuery("(max-width: 400px)");
+  const { user } = useAuth();  
   const {
     cartItems,
     totalCart,
