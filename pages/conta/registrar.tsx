@@ -30,7 +30,7 @@ export default function Register({ user, menus, states }: RegisterProps) {
 export async function getServerSideProps() {
   try {
     const [menus, states] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`/api/categories`),
       getData(),
     ]);
 

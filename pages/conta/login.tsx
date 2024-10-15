@@ -22,7 +22,7 @@ export default function LoginPage({ user, menus }: HomeProps) {
 export async function getServerSideProps() {
   try {
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`/api/categories`),
     ]);
 
     return {

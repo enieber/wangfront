@@ -4,6 +4,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
+import { builderHeader } from "../helpers/header";
 
 const FinalizarCompra = dynamic(() => import('../components/Pages/FinalizarCompra'), { ssr: false });
 
@@ -27,8 +28,13 @@ export default function FinalizarCompraPage({ user, menus }: CarrinhoProps) {
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    }    
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
  
     return {

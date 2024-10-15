@@ -2,6 +2,7 @@ import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import dynamic from "next/dynamic";
+import { builderHeader } from "../../helpers/header";
 
 const Favoritos = dynamic(() => import("../../components/Pages/Favorito"), {
   ssr: false,
@@ -27,8 +28,13 @@ export default function FavoritoPage({ user, menus }: FavoritosProps) {
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    } 
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
 
     return {

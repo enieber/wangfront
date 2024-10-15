@@ -14,6 +14,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
 import ProductItem from "../../components/Products/ProductItem";
 import Layout from "../../components/Layout";
+import { builderHeader } from "../../helpers/header";
 
 interface CategoriaProps {
   categories: any[];
@@ -142,11 +143,16 @@ export async function getServerSideProps(context: any) {
   try {
     const product_categories = context.params.name;
     const sort = context.query.sort;
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    } 
     const [categories, productsRes] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
       axios.post(`${process.env.URL}/platform/list-products`, {
         product_categories,
-      }),
+      }, headers),
     ]);
 
     const products = productsRes.data.sort((a:any, b: any) => {

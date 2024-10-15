@@ -3,6 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import dynamic from "next/dynamic";
 import { getData } from "../api/states";
+import { builderHeader } from "../../helpers/header";
 
 const Endereco = dynamic(() => import("../../components/Pages/Endereco"), {
   ssr: false,
@@ -29,8 +30,13 @@ export default function Login({ user, menus, states }: HomeProps) {
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    } 
     const [menus, states] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
       getData(),
     ]);
 

@@ -5,6 +5,7 @@ import Banner from "../components/Banner";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
 import axios from "axios";
+import { builderHeader } from '../helpers/header';
 
 interface HomeProps {
   banners: any[];
@@ -48,14 +49,19 @@ export default function Home({
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    }
     const [menus, bannersRes, mostSoldRes, weeklyHighlightRes] =
       await Promise.all([
-        axios.get(`${process.env.URL}/platform/get-categories`),
-        axios.get(`${process.env.URL}/platform/list-promotions`),
-        axios.get(`${process.env.URL}/platform/list-most-sold`),
-        axios.get(`${process.env.URL}/platform/list-weekly-product-highlight`),
-      ]);
-
+        axios.get(`${process.env.URL}/platform/get-categories`, headers),
+        axios.get(`${process.env.URL}/platform/list-promotions`, headers),
+        axios.get(`${process.env.URL}/platform/list-most-sold`, headers),
+        axios.get(`${process.env.URL}/platform/list-weekly-product-highlight`, headers),
+      ]);    
+      
     return {
       props: {
         banners: bannersRes.data.main,

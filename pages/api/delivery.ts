@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import Api from "../../services/api";
 import axios from "axios";
 
 export default async function handler(

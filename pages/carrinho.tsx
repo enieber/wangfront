@@ -5,6 +5,7 @@ import Layout from "../components/Layout";
 
 import dynamic from "next/dynamic";
 import axios from "axios";
+import { builderHeader } from "../helpers/header";
 
 const CarrinhoContent = dynamic(() => import("../components/Pages/Carrinho"), {
   ssr: false,
@@ -30,16 +31,14 @@ export default function Carrinho({ user, menus }: CarrinhoProps) {
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    } 
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
-    // try {
-    //   const res = await aboutMe(context);
-    //   user = res.data;
-    // } catch (err) {
-    //   console.log(err);
-    //   user = null;
-    // }
 
     return {
       props: {

@@ -88,6 +88,10 @@ export default function Carousel(props: any) {
     });
   };
 
+  if (!props.items[currentIndex]) {
+    return null;
+  }
+
   if (props.full) {
     return (
       <Flex direction="row" align="center" justify="center" position="relative" width="full" overflow="hidden">

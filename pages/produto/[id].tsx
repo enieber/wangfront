@@ -1,6 +1,7 @@
 import Layout from "../../components/Layout";
 import dynamic from "next/dynamic";
 import axios from 'axios';
+import { builderHeader } from "../../helpers/header";
 
 const ProductContent = dynamic(() => import("../../components/Pages/Product"), {
   ssr: false,
@@ -23,13 +24,17 @@ export async function getServerSideProps(context: any) {
   try {
     const product_categories = "masculino";
     const id = context.params.id;
-
+    const headers = builderHeader(context);
+    if (headers) {
+      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      user = response.data
+    } 
     const [categories, products, product] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),      
       axios.post(`${process.env.URL}/platform/list-products`, {
         product_categories,
-      }),
-      axios.get(`${process.env.URL}/platform/product-by-id/${id}`),
+      }, headers),
+      axios.get(`${process.env.URL}/platform/product-by-id/${id}`, headers),
     ]);
 
     return {
