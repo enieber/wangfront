@@ -1,11 +1,8 @@
-import {
-  Box,
-} from "@chakra-ui/react";
-
-import { getData } from '../api//states'
-import dynamic from 'next/dynamic';
+import { Box } from "@chakra-ui/react";
+import axios from 'axios';
+import { getData } from "../api/states";
+import dynamic from "next/dynamic";
 import Layout from "../../components/Layout";
-import Api from "../../services/api";
 
 interface RegisterProps {
   user: any;
@@ -13,7 +10,10 @@ interface RegisterProps {
   states: any[];
 }
 
-const RegisterContent = dynamic(() => import('../../components/Pages/Register'), { ssr: false });
+const RegisterContent = dynamic(
+  () => import("../../components/Pages/Register"),
+  { ssr: false }
+);
 
 export default function Register({ user, menus, states }: RegisterProps) {
   return (
@@ -30,7 +30,7 @@ export default function Register({ user, menus, states }: RegisterProps) {
 export async function getServerSideProps() {
   try {
     const [menus, states] = await Promise.all([
-      Api.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`),
       getData(),
     ]);
 

@@ -14,7 +14,6 @@ import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
 import ProductItem from "../../components/Products/ProductItem";
 import Layout from "../../components/Layout";
-import Api, { aboutMe } from "../../services/api";
 
 interface CategoriaProps {
   categories: any[];
@@ -144,8 +143,8 @@ export async function getServerSideProps(context: any) {
     const product_categories = context.params.name;
     const sort = context.query.sort;
     const [categories, productsRes] = await Promise.all([
-      Api.get(`${process.env.URL}/platform/get-categories`),
-      Api.post(`${process.env.URL}/platform/list-products`, {
+      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.post(`${process.env.URL}/platform/list-products`, {
         product_categories,
       }),
     ]);
@@ -171,13 +170,6 @@ export async function getServerSideProps(context: any) {
       return 0
     })
   
-    try {
-      const res = await aboutMe(context);
-      user = res.data;
-    } catch (err) {
-      console.log(err);
-      user = null;
-    }
     return {
       props: {
         categories: categories.data,

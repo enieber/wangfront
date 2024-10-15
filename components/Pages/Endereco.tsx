@@ -114,7 +114,6 @@ export default function Endereco({ states }: any) {
   const [loading, setLoading] = useState<boolean>(false);
   function saveAddress(valus: any) {}
 
-
   async function searchAddressInfo(cep: any, setField: any) {
     setLoading(true);
     try {
@@ -138,7 +137,7 @@ export default function Endereco({ states }: any) {
       setLoading(false);
     }
   }
-console.log(user)
+  console.log(user);
   return (
     <Flex direction={"column"} as={"main"} w={"full"}>
       <Flex p={10}>
@@ -157,7 +156,7 @@ console.log(user)
 
           <Link href="/conta">Minha Conta</Link>
           <Link href="/conta/endereco">Minha endereço</Link>
-          
+
           <Link href="/conta/senha">Alterar Senha</Link>
         </Card>
         <Card>
@@ -174,7 +173,7 @@ console.log(user)
                     <Formik
                       initialValues={{
                         nome: user?.name,
-                        email: "",
+                        email: user.email,
                         razao_social: "",
                         inscricao_estadual: "",
                         password: "",

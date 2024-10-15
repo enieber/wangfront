@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
-import Api, { aboutMe } from "../../services/api";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { getData } from "../api/states";
 
-const Endereco = dynamic(() => import('../../components/Pages/Endereco'), { ssr: false });
-
+const Endereco = dynamic(() => import("../../components/Pages/Endereco"), {
+  ssr: false,
+});
 
 interface HomeProps {
   user: any;
@@ -14,11 +14,7 @@ interface HomeProps {
   states: any[];
 }
 
-export default function Login({
-  user,
-  menus,
-  states
-}: HomeProps) {
+export default function Login({ user, menus, states }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
@@ -31,35 +27,26 @@ export default function Login({
 }
 
 export async function getServerSideProps(context: any) {
-  let user = null
+  let user = null;
   try {
-    const [menus, states] =
-      await Promise.all([
-        Api.get(`${process.env.URL}/platform/get-categories`),
-        getData(),
-      ]);
-
-      try {
-        const res = await aboutMe(context);
-        user = res.data;
-      } catch (err) {
-        console.log(err);
-        user = null;
-      }
+    const [menus, states] = await Promise.all([
+      axios.get(`${process.env.URL}/platform/get-categories`),
+      getData(),
+    ]);
 
     return {
-      props: {        
+      props: {
         menus: menus.data,
         user,
-        states: states.data
+        states: states.data,
       },
     };
   } catch (error) {
     return {
-      props: {        
+      props: {
         menus: [],
         user,
-        states: []
+        states: [],
       },
     };
   }

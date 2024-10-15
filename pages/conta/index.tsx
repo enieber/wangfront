@@ -1,11 +1,11 @@
 import axios from "axios";
 import { Box, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
-import Api, { aboutMe } from "../../services/api";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const Conta = dynamic(() => import('../../components/Pages/Conta'), { ssr: false });
-
+const Conta = dynamic(() => import("../../components/Pages/Conta"), {
+  ssr: false,
+});
 
 interface HomeProps {
   user: any;
@@ -26,17 +26,10 @@ export default function ContaPage({ user, menus }: HomeProps) {
 
 export async function getServerSideProps(context: any) {
   let user = null;
-  try {    
+  try {
     const [menus] = await Promise.all([
-      Api.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`),
     ]);
-    try {   
-      const res = await aboutMe(context);
-      user = res.data;
-    } catch (err) {
-      console.log(err);
-      user = null;
-    }
 
     return {
       props: {
