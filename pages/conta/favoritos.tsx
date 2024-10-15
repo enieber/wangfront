@@ -25,34 +25,22 @@ export default function FavoritoPage({ user, menus }: FavoritosProps) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  let user = null;
-  try {
-    const headers = builderHeader(context);
-    if (headers) {
-      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
-      user = response.data
-    } 
+export async function getStaticProps(context: any) {
+  try {    
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`, headers),
+      axios.get(`${process.env.URL}/platform/get-categories`),
     ]);
 
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
-    
+
     return {
       props: {
-        menus: menus.data,
-        user,
+        menus: menus.data,        
       },
     };
   } catch (error) {
     return {
       props: {
         menus: [],
-        user,
       },
     };
   }

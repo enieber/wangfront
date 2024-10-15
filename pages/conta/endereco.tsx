@@ -27,28 +27,16 @@ export default function Login({ user, menus, states }: HomeProps) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  let user = null;
+export async function getStaticProps(context: any) {
   try {
-    const headers = builderHeader(context);
-    if (headers) {
-      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
-      user = response.data
-    } 
     const [menus, states] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`, headers),
+      axios.get(`${process.env.URL}/platform/get-categories`),
       getData(),
     ]);
 
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
-    
     return {
       props: {
         menus: menus.data,
-        user,
         states: states.data,
       },
     };
@@ -56,7 +44,6 @@ export async function getServerSideProps(context: any) {
     return {
       props: {
         menus: [],
-        user,
         states: [],
       },
     };

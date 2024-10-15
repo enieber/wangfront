@@ -19,6 +19,7 @@ export default function ProductPage({
     </Layout>
   );
 }
+
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
@@ -26,7 +27,7 @@ export async function getServerSideProps(context: any) {
     const id = context.params.id;
     const headers = builderHeader(context);
     if (headers) {
-      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
+      const response = await axios.get(`${process.env.URL}/platform/me`, headers)
       user = response.data
     } 
     const [categories, products, product] = await Promise.all([
@@ -37,11 +38,6 @@ export async function getServerSideProps(context: any) {
       axios.get(`${process.env.URL}/platform/product-by-id/${id}`, headers),
     ]);
 
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
-    
     return {
       props: {
         categories: categories.data,

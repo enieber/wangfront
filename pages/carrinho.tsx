@@ -28,34 +28,21 @@ export default function Carrinho({ user, menus }: CarrinhoProps) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  let user = null;
-  try {
-    const headers = builderHeader(context);
-    if (headers) {
-      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
-      user = response.data
-    } 
+export async function getStaticProps() {
+  try {    
     const [menus] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`, headers),
+      axios.get(`${process.env.URL}/platform/get-categories`),
     ]);
 
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
-    
     return {
       props: {
         menus: menus.data,
-        user,
       },
     };
   } catch (error) {
     return {
       props: {
         menus: [],
-        user,
       },
     };
   }
