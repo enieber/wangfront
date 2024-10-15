@@ -19,12 +19,17 @@ export default function LoginPage({ user, menus }: HomeProps) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
   try {
     const [menus] = await Promise.all([
       axios.get(`/api/categories`),
     ]);
 
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=3600, stale-while-revalidate=59'
+    );
+    
     return {
       props: {
         menus: menus.data,

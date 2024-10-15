@@ -36,6 +36,11 @@ export async function getServerSideProps(context: any) {
     const [menus] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
+
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=3600, stale-while-revalidate=59'
+    );
  
     return {
       props: {

@@ -62,6 +62,11 @@ export async function getServerSideProps(context: any) {
         axios.get(`${process.env.URL}/platform/list-weekly-product-highlight`, headers),
       ]);    
       
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=3600, stale-while-revalidate=59'
+    );
+    
     return {
       props: {
         banners: bannersRes.data.main,

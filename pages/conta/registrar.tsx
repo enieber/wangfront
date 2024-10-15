@@ -27,12 +27,17 @@ export default function Register({ user, menus, states }: RegisterProps) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
   try {
     const [menus, states] = await Promise.all([
       axios.get(`/api/categories`),
       getData(),
     ]);
+
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=3600, stale-while-revalidate=59'
+    );
 
     return {
       props: {
