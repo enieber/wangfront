@@ -11,23 +11,9 @@ import {
   InputGroup,
   InputRightElement,
   Button,
-  FormErrorMessage,
-  Radio,
-  RadioGroup,
-  Stack,
+  FormErrorMessage,  
   Box,
-  Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Stepper,
-  useSteps,
   useMediaQuery,
-  useToast,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -38,10 +24,10 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
-import { Formik, Form, Field } from "formik";
+import { Formik, Field } from "formik";
 import InputMask from "react-input-mask";
 import * as Yup from "yup";
 import Select from "react-select";
