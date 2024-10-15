@@ -18,10 +18,13 @@ import {
 import { Field, Form, Formik } from "formik";
 import { Zoom } from "reactjs-image-zoom";
 import Carousel from "../../components/UI/Carousel";
+import Layout from "../../components/Layout";
 import ProductsSection from "../../components/Products/ProductsSections";
 import { formatMoney } from "../../helpers/money";
 import ReviewStars from "../../components/UI/ReviewStart";
+import QuickCart from "../../components/Cart/QuickCart";
 import ReviewCard from "../../components/ReviewCard";
+import Api, { aboutMe } from "../../services/api";
 import ShippingList from "../../components/ShippingList";
 import { useState } from "react";
 import { useCart } from "../../context/CartContext";

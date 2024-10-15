@@ -31,8 +31,8 @@ import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 // @ts-ignore
 import InputMask from "react-input-mask";
-import { useState } from "react";
-import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import { useEffect, useState, useContext } from "react";
+import { BsCart3, BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
 import { validateCNPJ, validateCPF } from "validations-br";
 import axios from "axios";
