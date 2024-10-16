@@ -27,8 +27,13 @@ export async function getServerSideProps(context: any) {
     const id = context.params.id;
     const headers = builderHeader(context);
     if (headers) {
-      const response = await axios.get(`${process.env.URL}/platform/me`, headers)
-      user = response.data
+      try {
+        const response = await axios.get(`${process.env.URL}/platform/me`, headers)
+        user = response.data
+      } catch (err) {
+        context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
+        console.log(err)
+      }
     } 
     const [categories, products, product] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),      
