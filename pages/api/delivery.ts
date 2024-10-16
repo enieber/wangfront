@@ -10,7 +10,7 @@ export default async function handler(
       console.log('query', req.query.cep)
       const { cep } = req.query;
       const response = await axios.post(
-        `${process.env.URL_API}/platform/get-delivery-value/${cep}`);
+        `${process.env.URL}/platform/get-delivery-value/${cep}`);
       const data = response.data;
       res.status(200).json(data);
     } else {

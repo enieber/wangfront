@@ -142,11 +142,16 @@ export async function getServerSideProps(context: any) {
   let user = null;
   try {
     const product_categories = context.params.name;
-    const sort = context.query.sort;
+    const sort = context.query.sort ? context.query.sort : 'up';
     const headers = builderHeader(context);
     if (headers) {
-      const response = await axios.get(`${process.env.URL}/platform/me`, headers)
-      user = response.data
+      try {
+        const response = await axios.get(`${process.env.URL}/platform/me`, headers)
+        user = response.data
+      } catch (err) {
+        // context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
+        console.log(err)
+      }
     } 
     const [categories, productsRes] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),
