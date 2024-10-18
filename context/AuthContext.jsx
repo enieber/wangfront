@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { adapterToClient } from '../helpers/adapter'
 
 const AuthContext = createContext();
 
@@ -23,14 +24,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  async function validUser(values) {
+    try {
+      setIsLoading(true);
+      await axios.post('/api/me', values);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+      throw err;
+    }
+  }
+
   const login = async (email, password) => {
     try {
       setIsLoading(true);
-      await axios.post('/api/login', {
+      const response = await axios.post('/api/login', {
         email,
         password
       });
-      setUser({ email });
+      setUser(adapterToClient(response.data));
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -38,15 +51,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const aboutMe = async (email, password) => {
+  const updateUser = async (data) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.put('/api/me', data);
+      setUser(adapterToClient(res.data));      
+      setIsLoading(false);
+      return res;
+    } catch (err) {
+      setIsLoading(false);
+      return { data: null };
+    }
+  };
+  
+  const aboutMe = async () => {
     try {
       setIsLoading(true);
       const res = await axios.get('/api/me');
-      setUser(res.data);
+      setUser(adapterToClient(res.data));
       setIsLoading(false);
+      return res;
     } catch (err) {
       setIsLoading(false);
-      throw err;
+      return { data: null };
     }
   };
 
@@ -64,9 +91,11 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         aboutMe,
+        updateUser,
         isLoading,
         setUser,
         user,
+        validUser,
         error
       }}
     >

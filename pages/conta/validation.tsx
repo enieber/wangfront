@@ -1,29 +1,26 @@
-import axios from "axios";
-import { Box, Flex } from "@chakra-ui/react";
-import Layout from "../../components/Layout";
 import dynamic from "next/dynamic";
+import axios from 'axios';
+import Layout from "../../components/Layout";
 import { builderHeader } from "../../helpers/header";
-
-const Conta = dynamic(() => import("../../components/Pages/Conta"), {
-  ssr: false,
-});
 
 interface HomeProps {
   user: any;
   menus: any[];
 }
 
-export default function ContaPage({ user, menus }: HomeProps) {  
+const ValidationPage = dynamic(() => import("../../components/Pages/Validation"), {
+  ssr: false,
+});
+
+export default function LoginPage({ user, menus }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
-      <Box w={"full"} bg={"#F5F5F5"} p={10}>
-        <Box m={5}>
-          <Conta userServer={user}/>
-        </Box>
-      </Box>
+      <ValidationPage />
     </Layout>
   );
 }
+
+
 
 export async function getServerProps(context: any) {
   let user = null;

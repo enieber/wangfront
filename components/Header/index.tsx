@@ -41,14 +41,18 @@ import QuickCart from '../Cart/QuickCart';
 import { useAuth } from '../../context/AuthContext';
 
 
-export default function Header({ menus, user }: any) {  
-  const { login, logout, setUser, isLoading } = useAuth();
+export default function Header({ menus, userServer }: any) {  
+  const { login, logout, user, setUser, isLoading, aboutMe } = useAuth();
   const [mobile] = useMediaQuery('(max-width: 400px)');
 
   useEffect(() => {
-    setUser(user)
+    if (!userServer) {
+      aboutMe()
+    } else {
+      setUser(userServer)
+    }
   }, [])
-
+  
   return (
     <Flex as={'header'} direction={'column'} w={'full'}>
       {!!mobile && <MenuMobile menuItems={menus} login={login} user={user} isLoading={isLoading} />}
@@ -82,8 +86,6 @@ const MenuMobile = (props: MenuProps) => {
   const handleGoToLogin = () => {
     router.push('/conta/login');
   };
-
-  console.log(user)
 
   return (
     <Flex my={2}>

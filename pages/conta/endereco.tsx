@@ -28,9 +28,21 @@ export default function Login({ user, menus, states }: HomeProps) {
 }
 
 export async function getStaticProps(context: any) {
+  let user = null;
   try {
+    let headers = builderHeader(context);
+    if (headers) {
+      try {
+        const response = await axios.get(`${process.env.URL}/platform/me`, headers)
+        user = response.data
+      } catch (err) {
+        context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
+        headers = {}
+        console.log(err)
+      }
+    } 
     const [menus, states] = await Promise.all([
-      axios.get(`${process.env.URL}/platform/get-categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
       getData(),
     ]);
 
@@ -38,6 +50,7 @@ export async function getStaticProps(context: any) {
       props: {
         menus: menus.data,
         states: states.data,
+        user,
       },
     };
   } catch (error) {
@@ -45,6 +58,7 @@ export async function getStaticProps(context: any) {
       props: {
         menus: [],
         states: [],
+        user,
       },
     };
   }
