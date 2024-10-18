@@ -24,10 +24,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  async function validUser(values) {
+  async function validUser(code) {
     try {
       setIsLoading(true);
-      await axios.post('/api/me', values);
+      await axios.post('/api/me', {
+        code,
+      });
       setIsLoading(false);
     } catch (err) {
       console.log(err);

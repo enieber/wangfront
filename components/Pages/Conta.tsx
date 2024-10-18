@@ -98,7 +98,7 @@ export default function Conta({ userServer }: any) {
         <Card gap={5} p={10}>
           <Heading size="md">{user.name ? user.name : ""}</Heading>
           <Link href="/conta">Minha Conta</Link>
-          <Link href="/conta/endereco">Minha endereço</Link>
+          <Link href="/conta/endereco">Meu Endereço</Link>
           <Link href="/conta/senha">Alterar Senha</Link>
         </Card>
         <Card>
@@ -289,7 +289,6 @@ export default function Conta({ userServer }: any) {
                                     )}
                                     <FormErrorMessage>
                                       {form.errors.cpf_cnpj}
-                                      {console.log(form.errors)}
                                     </FormErrorMessage>
                                   </FormControl>
                                 )}

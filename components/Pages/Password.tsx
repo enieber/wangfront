@@ -54,7 +54,7 @@ export default function Conta() {
           <Heading size="md">{user?.name ? user.name : ""}</Heading>
 
           <Link href="/conta">Minha Conta</Link>
-          <Link href="/conta/endereco">Minha endereço</Link>
+          <Link href="/conta/endereco">Meu Endereço</Link>
           <Link href="/conta/senha">Alterar Senha</Link>
         </Card>
         <Card>
@@ -70,11 +70,9 @@ export default function Conta() {
                   >
                     <Formik
                       initialValues={{
-                        name: user?.name || "",
-                        gender: user?.gender || "",
-                        birth_date: user?.birth_date || "",
-                        email: user?.email || "",
-                        phone_number: user?.phone_number || "",
+                        old_passowd: "",
+                        password: "",
+                        repeat_password: "",
                       }}
                       onSubmit={(values) => {
                         console.log(values);
@@ -96,7 +94,23 @@ export default function Conta() {
                             >
                               <Container>
                                 <Text fontSize={"sm"} fontWeight={"600"}>
-                                  Senha:
+                                  Senha Antiga:
+                                </Text>
+                                <Field name="old_passowd">
+                                  {({ field }) => (
+                                    <Input
+                                      {...field}
+                                      type="passowd"
+                                      value={field.value}
+                                      onChange={handleChange}
+                                      placeholder="Digite sua senha"
+                                    />
+                                  )}
+                                </Field>
+                              </Container>
+                              <Container>
+                                <Text fontSize={"sm"} fontWeight={"600"}>
+                                  Nova Senha:
                                 </Text>
                                 <Field name="password">
                                   {({ field }) => (
