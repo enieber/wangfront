@@ -66,6 +66,7 @@ export async function getStaticProps() {
         productsWeeklyHighlight: weeklyHighlightRes.data,
         menus: menus.data,
       },
+      revalidate: 3600, // revalida após uma hora
     };
   } catch (error) {
     return {
@@ -77,6 +78,7 @@ export async function getStaticProps() {
         productsWeeklyHighlight: [],
         menus: [],
       },
+      revalidate: 3600, // revalida após uma hora
     };
   }
 }

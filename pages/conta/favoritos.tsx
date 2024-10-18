@@ -26,7 +26,19 @@ export default function FavoritoPage({ user, menus }: FavoritosProps) {
 }
 
 export async function getStaticProps(context: any) {
-  try {    
+  let user = null;
+  try {
+    let headers = builderHeader(context);
+    if (headers) {
+      try {
+        const response = await axios.get(`${process.env.URL}/platform/me`, headers)
+        user = response.data
+      } catch (err) {
+        context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
+        headers = {}
+        console.log(err)
+      }
+    } 
     const [menus] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`),
     ]);
@@ -34,13 +46,15 @@ export async function getStaticProps(context: any) {
 
     return {
       props: {
-        menus: menus.data,        
+        menus: menus.data,
+        user,
       },
     };
   } catch (error) {
     return {
       props: {
         menus: [],
+        user,
       },
     };
   }

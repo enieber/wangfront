@@ -59,8 +59,12 @@ export default function LoginContent() {
     return error;
   };
 
-  function redictAccount() {
-    router.push("/conta");
+  function redictAccount(res: any) {
+    if (user.is_validated) {
+      router.push("/conta");
+    } else {
+      router.push("/conta/validation");
+    }
   }
 
   function submit(values: any) {
@@ -73,7 +77,7 @@ export default function LoginContent() {
           duration: 9000,
           isClosable: true,
         });
-        redictAccount();
+        redictAccount(res);
       })
       .catch((err: any) => {
         toast({
@@ -94,116 +98,117 @@ export default function LoginContent() {
     return () => {};
   });
 
-  return (
-    <Box w={"full"} bg={"#F5F5F5"} p={10}>
-      <Box m={5}>
-        <Flex direction={"column"} as={"main"} w={"full"}>
-          <Flex as={"section"} direction={"column"} w={"full"} pt={10} pb={20}>
-            <Container alignItems={"center"} maxW={"container.xl"}>
-              <Center>
-                <Heading
-                  as={"h2"}
-                  size={"lg"}
-                  mb={10}
-                  borderBottom={"1px solid"}
-                  borderColor={"gray.200"}
-                  pb={4}
-                >
-                  Entre em sua conta
-                </Heading>
+  return (    
+    <Flex direction={"column"} as={"main"} w={"full"}>
+      <Flex as={"section"} direction={"column"} py={4}>
+        <Container maxW={"container.xl"}>
+          <Center>
+            <Heading
+              as={"h2"}
+              size={"lg"}
+              mb={10}
+              borderBottom={"1px solid"}
+              borderColor={"gray.200"}
+              pb={4}
+            >
+              Entre em sua conta
+            </Heading>
+          </Center>
+          <Formik
+            onSubmit={(values) => submit(values)}
+            initialValues={{ email: "", password: "", showPassowrd: false }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <Center px={10}>
+                <Form>
+                  <Box>
+                    <Field name="email">
+                      {({ field, form }: { field: any; form: any }) => (
+                        <FormControl
+                          isInvalid={form.errors.email && form.touched.email}
+                        >
+                          <FormLabel>Email</FormLabel>
+                          <Input
+                            {...field}
+                            placeholder="contato@toycity.com.br"
+                          />
+                          <FormErrorMessage>
+                            {form.errors.email}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>                    
+                    <Field name="password" validate={handleValidatePassword}>
+                      {({ field, form }: { field: any; form: any }) => (
+                        <FormControl
+                          mt={4}
+                          isInvalid={
+                            form.errors.password && form.touched.password
+                          }
+                        >
+                          <FormLabel>Senha</FormLabel>
+                          <InputGroup>
+                            <Input
+                              key={1}
+                              {...field}
+                              type={values.showPassowrd ? "text" : "password"}
+                              placeholder="Senha"
+                              w={"100%"}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                h="1.75rem"
+                                size="md"
+                                onClick={() => {
+                                  form.setFieldValue(
+                                    "showPassowrd",
+                                    !values.showPassowrd
+                                  );
+                                }}
+                              >
+                                {show ? <BsEyeSlashFill /> : <BsEyeFill />}
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.password}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Box>
+                  <Button
+                    isLoading={isLoading}
+                    mt={4}
+                    w={"100%"}
+                    color={"white"}
+                    bg={"#00a0e3"}
+                    onClick={() => submit(values)}
+                    _hover={{
+                      bg: "primary.600",
+                    }}
+                  >
+                    Entrar
+                  </Button>
+                </Form>
               </Center>
-              <Formik
-                onSubmit={(values) => submit(values)}
-                initialValues={{ email: "", password: "", showPassowrd: false }}
-              >
-                {({
-                  values,
-                  errors,
-                  touched,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  isSubmitting,
-                }) => (
-                  <Center>
-                    <Form>
-                      <Field name="email" validate={handleValidateEmail}>
-                        {({ field, form }: { field: any; form: any }) => (
-                          <FormControl
-                            isInvalid={form.errors.email && form.touched.email}
-                          >
-                            <FormLabel>Email</FormLabel>
-                            <Input w={"100%"} {...field} placeholder="email" />
-                            <FormErrorMessage>
-                              {form.errors.email}
-                            </FormErrorMessage>
-                          </FormControl>
-                        )}
-                      </Field>
-                      <Field name="password" validate={handleValidatePassword}>
-                        {({ field, form }: { field: any; form: any }) => (
-                          <FormControl
-                            mt={4}
-                            isInvalid={
-                              form.errors.password && form.touched.password
-                            }
-                          >
-                            <FormLabel>Senha</FormLabel>
-                            <InputGroup>
-                              <Input
-                                key={1}
-                                {...field}
-                                type={values.showPassowrd ? "text" : "password"}
-                                placeholder="Senha"
-                                w={"100%"}
-                              />
-                              <InputRightElement width="4.5rem">
-                                <Button
-                                  h="1.75rem"
-                                  size="md"
-                                  onClick={() => {
-                                    form.setFieldValue(
-                                      "showPassowrd",
-                                      !values.showPassowrd
-                                    );
-                                  }}
-                                >
-                                  {show ? <BsEyeSlashFill /> : <BsEyeFill />}
-                                </Button>
-                              </InputRightElement>
-                            </InputGroup>
-                            <FormErrorMessage>
-                              {form.errors.password}
-                            </FormErrorMessage>
-                          </FormControl>
-                        )}
-                      </Field>
-                      <Button
-                        isLoading={isLoading}
-                        mt={4}
-                        w={"100%"}
-                        color={"white"}
-                        bg={"#00a0e3"}
-                        onClick={() => submit(values)}
-                        _hover={{
-                          bg: "primary.600",
-                        }}
-                      >
-                        Entrar
-                      </Button>
-                    </Form>
-                  </Center>
-                )}
-              </Formik>
-              <Center>
-                <Button onClick={handleGoToRegistrar} mt={4}>
-                  Ainda não possuo conta.
-                </Button>
-              </Center>
-            </Container>
-          </Flex>
-        </Flex>
-      </Box>
-    </Box>
+            )}
+          </Formik>
+          <Center>
+            <Button onClick={handleGoToRegistrar} mt={4}>
+              Ainda não possuo conta.
+            </Button>
+          </Center>
+        </Container>
+      </Flex>
+    </Flex>
   );
 }

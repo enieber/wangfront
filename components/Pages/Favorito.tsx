@@ -21,6 +21,10 @@ import { useCart } from "../../context/CartContext";
 export default function Favoritos() {
   const { user } = useAuth();
   const { cartItems } = useCart();
+  if (!user) {
+    return null
+  }
+
   return (
     <Flex as={"main"} direction={"column"} w={"full"} py={10}>
       <Container maxW={"container.xl"}>
