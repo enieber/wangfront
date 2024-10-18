@@ -92,7 +92,7 @@ export default function LoginContent() {
 
   useEffect(() => {
     if (user) {
-      redictAccount();
+      redictAccount(user);
     }
 
     return () => {};
