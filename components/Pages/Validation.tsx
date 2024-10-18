@@ -15,53 +15,38 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik, ErrorMessage } from "formik";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useContext, useState, useEffect } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 import Layout from "../../components/Layout";
 import { useAuth } from "../../context/AuthContext";
 import Api from "../../services/api";
+import * as Yup from "yup";
 
 interface HomeProps {
   user: any;
   menus: any[];
 }
-const show = true;
 
-export default function LoginContent() {
+
+const Schema = Yup.object({
+  code: Yup.string()
+    .matches(/^\d{6}$/, "O código deve conter exatamente 6 dígitos numéricos.")
+    .required("Codigo numerico obrigatorio"),  
+});
+
+
+export default function ValidationContent() {
   const toast = useToast();
   const { validUser, isLoading, user } = useAuth();
   const router = useRouter();
-  const handleGoToRegistrar = () => {
-    router.push("/conta/registrar");
-  };
-
-  const handleValidateEmail = (value: string) => {
-    let error;
-    if (!value) {
-      error = "Digite um email";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-      error = "Endereço de email inválido.";
-    }
-
-    return error;
-  };
-
-  const handleValidatePassword = (value: string) => {
-    let error;
-    if (!value) {
-      error = "Digite uma senha";
-    }
-    return error;
-  };
-
   function redictAccount() {
     router.push("/conta");
   }
 
   function submit(values: any) {
-    validUser(values.email, values.password)
+    validUser(values.code)
       .then((res: any) => {
         toast({
           title: "Login feito com sucesso",
@@ -101,9 +86,10 @@ export default function LoginContent() {
                   Valide seu email
                 </Heading>
               </Center>
-              <Formik
-                onSubmit={(values) => submit(values)}
+              <Formik                
                 initialValues={{ code: ""}}
+                validationSchema={Schema}
+                onSubmit={(values) => submit(values)}
               >
                 {({
                   values,
@@ -116,7 +102,7 @@ export default function LoginContent() {
                 }) => (
                   <Center>
                     <Form>                      
-                      <Field name="Codigo">
+                      <Field name="code">
                         {({ field, form }: { field: any; form: any }) => (
                           <FormControl
                             mt={4}
@@ -127,9 +113,9 @@ export default function LoginContent() {
                             <FormLabel>Codigo</FormLabel>
                             <InputGroup>
                               <Input
-                                key={1}
                                 {...field}
-                                placeholder="Codigo"
+                                type="number"
+                                placeholder="Digite seu codigo"
                                 w={"100%"}
                               />
                             </InputGroup>
@@ -145,7 +131,7 @@ export default function LoginContent() {
                         w={"100%"}
                         color={"white"}
                         bg={"#00a0e3"}
-                        onClick={() => submit(values)}
+                        type="submit"
                         _hover={{
                           bg: "primary.600",
                         }}
@@ -155,12 +141,7 @@ export default function LoginContent() {
                     </Form>
                   </Center>
                 )}
-              </Formik>
-              <Center>
-                <Button onClick={handleGoToRegistrar} mt={4}>
-                  Ainda não possuo conta.
-                </Button>
-              </Center>
+              </Formik>              
             </Container>
           </Flex>
         </Flex>

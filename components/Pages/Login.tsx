@@ -63,7 +63,7 @@ export default function LoginContent() {
     if (user.is_validated) {
       router.push("/conta");
     } else {
-      router.push("/conta/validation");
+      router.push(`/conta/validation`);
     }
   }
 

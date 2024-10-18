@@ -39,7 +39,10 @@ export default async function handler(request, res) {
     } else if (request.method === "POST") {
       const token = getToken(request)       
       const code = request.body.code;
-      const response = await axios.put(`${process.env.URL}/platform/verify-user/${code}`, {},
+      const response = await axios.put(`${process.env.URL}/platform/verify-user/${code}`, {
+        code,
+        token,
+      },
         {
         headers: {
           Authorization: `Bearer ${token}`,
