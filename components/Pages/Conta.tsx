@@ -173,7 +173,7 @@ export default function Conta({ userServer }: any) {
                                 {({ field }) => (
                                   <Input
                                     {...field}
-                                    disabled={isNotEdit}
+                                    disabled={true}
                                     value={field.value}
                                     onChange={handleChange}
                                     placeholder="Digite seu email"
