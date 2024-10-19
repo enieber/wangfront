@@ -21,6 +21,9 @@ import {
   useMediaQuery,
   Input,
   Heading,
+  FormErrorMessage,
+  FormControl,
+  useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { FaRegUserCircle, FaRegStar } from "react-icons/fa";
@@ -28,12 +31,30 @@ import { FaFileCircleCheck } from "react-icons/fa6";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field } from "formik";
-import InputMask from "react-input-mask";
-import Favoritos from "./Favorito";
+import * as yup from "yup";
+
+const trocarSenhaSchema = yup.object().shape({
+  old_password: yup.string().required("A senha antiga é obrigatória."),
+  password: yup
+    .string()
+    .required("A nova senha é obrigatória.")
+    .notOneOf(
+      [yup.ref("old_password")],
+      "A nova senha deve ser diferente da senha antiga."
+    ),
+  re_password: yup
+    .string()
+    .oneOf(
+      [yup.ref("password")],
+      "A confirmação da senha deve ser igual à nova senha."
+    )
+    .required("A confirmação da nova senha é obrigatória."),
+});
 
 export default function Conta() {
+  const toast = useToast();
   const [mobile] = useMediaQuery("(max-width: 400px)");
-  const { user } = useAuth();
+  const { user, newPassword } = useAuth();
   const router = useRouter();
   const [isNotEdit, enableNotEdit] = useState(true);
 
@@ -70,13 +91,39 @@ export default function Conta() {
                   >
                     <Formik
                       initialValues={{
-                        old_passowd: "",
+                        old_password: "",
                         password: "",
-                        repeat_password: "",
+                        re_password: "",
                       }}
                       onSubmit={(values) => {
-                        console.log(values);
+                        console.log(values)
+                        newPassword(values)
+                          .then((res: any) => {
+                            toast({
+                              title: "Senha alterada com sucesso",
+                              status: "success",
+                              duration: 9000,
+                              isClosable: true,
+                            });
+                            router.push("/conta");
+                          })
+                          .catch((err: any) => {
+                            let message = err.message
+                            if (err.response) {
+                              if (err.response.data.message) {
+                                message = err.response.data.message
+                              }
+                            }
+                            toast({
+                              title: "Falha ao tentar alterar senha",
+                              description: message,
+                              status: "warning",
+                              duration: 9000,
+                              isClosable: true,
+                            });
+                          })                      
                       }}
+                      validationSchema={trocarSenhaSchema}
                     >
                       {({ handleChange, handleSubmit, values }) => (
                         <Form onSubmit={handleSubmit}>
@@ -96,15 +143,27 @@ export default function Conta() {
                                 <Text fontSize={"sm"} fontWeight={"600"}>
                                   Senha Antiga:
                                 </Text>
-                                <Field name="old_passowd">
-                                  {({ field }) => (
-                                    <Input
-                                      {...field}
-                                      type="passowd"
-                                      value={field.value}
-                                      onChange={handleChange}
-                                      placeholder="Digite sua senha"
-                                    />
+                                <Field name="old_password">
+                                  {({ field, form }) => (
+                                    <FormControl
+                                      mt={4}
+                                      isInvalid={
+                                        form.errors.old_password &&
+                                        form.touched.old_password
+                                      }
+                                    >
+                                      <Input
+                                        {...field}
+                                        type="password"
+                                        value={field.value}
+                                        onChange={handleChange}
+                                        placeholder="Digite sua senha"
+                                      />
+                                      <FormErrorMessage>
+                                        {form.errors.old_password}
+                                        {console.log(form.errors)}
+                                      </FormErrorMessage>
+                                    </FormControl>
                                   )}
                                 </Field>
                               </Container>
@@ -113,14 +172,25 @@ export default function Conta() {
                                   Nova Senha:
                                 </Text>
                                 <Field name="password">
-                                  {({ field }) => (
-                                    <Input
-                                      {...field}
-                                      type="password"
-                                      value={field.value}
-                                      onChange={handleChange}
-                                      placeholder="Digite sua senha"
-                                    />
+                                  {({ field, form }) => (
+                                    <FormControl
+                                      mt={4}
+                                      isInvalid={
+                                        form.errors.password &&
+                                        form.touched.password
+                                      }
+                                    >
+                                      <Input
+                                        {...field}
+                                        type="password"
+                                        value={field.value}
+                                        onChange={handleChange}
+                                        placeholder="Digite sua senha"
+                                      />
+                                      <FormErrorMessage>
+                                        {form.errors.password}
+                                      </FormErrorMessage>
+                                    </FormControl>
                                   )}
                                 </Field>
                               </Container>
@@ -129,14 +199,25 @@ export default function Conta() {
                                   Repita a Senha:
                                 </Text>
                                 <Field name="re_password">
-                                  {({ field }) => (
-                                    <Input
-                                      {...field}
-                                      type="password"
-                                      value={field.value}
-                                      onChange={handleChange}
-                                      placeholder="Digite sua senha"
-                                    />
+                                  {({ field, form }) => (
+                                    <FormControl
+                                      mt={4}
+                                      isInvalid={
+                                        form.errors.re_password &&
+                                        form.touched.re_password
+                                      }
+                                    >
+                                      <Input
+                                        {...field}
+                                        type="password"
+                                        value={field.value}
+                                        onChange={handleChange}
+                                        placeholder="Digite sua senha"
+                                      />
+                                      <FormErrorMessage>
+                                        {form.errors.re_password}
+                                      </FormErrorMessage>
+                                    </FormControl>
                                   )}
                                 </Field>
                               </Container>
