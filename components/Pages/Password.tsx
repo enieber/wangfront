@@ -105,7 +105,9 @@ export default function Conta() {
                               duration: 9000,
                               isClosable: true,
                             });
-                            router.push("/conta");
+                            setTimeout(() => {
+                              router.push("/conta");
+                            }, 3000);
                           })
                           .catch((err: any) => {
                             let message = err.message
