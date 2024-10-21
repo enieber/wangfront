@@ -13,3 +13,10 @@ export function builderHeader(context: any) {
   }
   return headers;
 }
+
+export function getToken(request) {
+  const cookies = request.headers.cookie;
+  const match = cookies.match(/authToken=([^;]+)/);
+  const token = match ? match[1] : null;
+  return token
+}

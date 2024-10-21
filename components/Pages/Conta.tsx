@@ -29,6 +29,7 @@ import {
   Box,
   FormControl,
   FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { FaRegUserCircle, FaRegStar } from "react-icons/fa";
@@ -73,6 +74,7 @@ const AcccountSchema = Yup.object({
 });
 
 export default function Conta({ userServer }: any) {
+  const toast = useToast();
   const [mobile] = useMediaQuery("(max-width: 400px)");
   const { user, updateUser } = useAuth();
   const router = useRouter();
@@ -141,7 +143,30 @@ export default function Conta({ userServer }: any) {
                         cpf_cnpj: user.cpf_cnpj,
                       }}
                       onSubmit={(values) => {
-                        updateUser(values);
+                        updateUser(values)
+                        .then((res: any) => {
+                          toast({
+                            title: "Dados Alterados com sucesso",
+                            status: "success",
+                            duration: 9000,
+                            isClosable: true,
+                          });
+                        })
+                        .catch((err: any) => {
+                          let message = err.message
+                          if (err.response) {
+                            if (err.response.data.message) {
+                              message = err.response.data.message
+                            }
+                          }
+                          toast({
+                            title: "Falha ao alterar dados",
+                            description: message,
+                            status: "warning",
+                            duration: 9000,
+                            isClosable: true,
+                          });
+                        })   
                       }}
                       validationSchema={AcccountSchema}
                     >
@@ -153,14 +178,24 @@ export default function Conta({ userServer }: any) {
                                 Nome:
                               </Text>
                               <Field name="name">
-                                {({ field }) => (
-                                  <Input
-                                    {...field}
-                                    value={field.value}
-                                    onChange={handleChange}
-                                    disabled={isNotEdit}
-                                    placeholder="Digite seu nome"
-                                  />
+                                {({ field, form }) => (
+                                  <FormControl
+                                    mt={4}
+                                    isInvalid={
+                                      form.errors.name && form.touched.name
+                                    }
+                                  >
+                                    <Input
+                                      {...field}
+                                      value={field.value}
+                                      onChange={handleChange}
+                                      disabled={isNotEdit}
+                                      placeholder="Digite seu nome"
+                                    />
+                                    <FormErrorMessage>
+                                      {form.errors.phone_number}
+                                    </FormErrorMessage>
+                                  </FormControl>
                                 )}
                               </Field>
                             </Flex>
@@ -186,22 +221,36 @@ export default function Conta({ userServer }: any) {
                                 Celular:
                               </Text>
                               <Field name="phone_number">
-                                {({ field }) => (
-                                  <InputMask
-                                    disabled={isNotEdit}
-                                    mask="(99) 99999-9999"
-                                    value={field.value}
-                                    onChange={handleChange}
+                                {({ field, form }) => (
+                                  <FormControl
+                                    mt={4}
+                                    isInvalid={
+                                      form.errors.phone_number &&
+                                      form.touched.phone_number
+                                    }
                                   >
-                                    {(inputProps: any) => (
-                                      <Input
-                                        {...inputProps}
-                                        disabled={isNotEdit}
-                                        type="text"
-                                        placeholder="(XX) XXXXX-XXXX"
-                                      />
-                                    )}
-                                  </InputMask>
+                                    <InputMask
+                                      disabled={isNotEdit}
+                                      mask="(99) 99999-9999"
+                                      value={field.value}
+                                      onChange={(e: any) =>
+                                        form.setFieldValue("phone_number", e.target.value)
+                                      }
+                                    >
+                                      {(inputProps: any) => (
+                                        <Input
+                                          {...inputProps}
+                                          disabled={isNotEdit}
+                                          type="text"
+                                          placeholder="(XX) XXXXX-XXXX"
+                                        />
+                                      )}
+                                    </InputMask>
+
+                                    <FormErrorMessage>
+                                      {form.errors.phone_number}
+                                    </FormErrorMessage>
+                                  </FormControl>
                                 )}
                               </Field>
                             </Flex>
@@ -261,7 +310,7 @@ export default function Conta({ userServer }: any) {
                                               {...inputProps}
                                               disabled={isNotEdit}
                                               w={mobile ? 350 : 500}
-                                              placeholder="060.408.690-38"
+                                              placeholder="000.000.000-00"
                                             />
                                           )}
                                         </InputMask>
@@ -281,7 +330,7 @@ export default function Conta({ userServer }: any) {
                                               {...field}
                                               w={mobile ? 350 : 500}
                                               disabled={isNotEdit}
-                                              placeholder="50.137.591/0001-11"
+                                              placeholder="00.000.000/0000-00"
                                             />
                                           )}
                                         </InputMask>
@@ -350,7 +399,7 @@ export default function Conta({ userServer }: any) {
                                               type="text"
                                               disabled={isNotEdit}
                                               w={mobile ? 350 : 500}
-                                              placeholder="01/06/1776"
+                                              placeholder="00/00/0000"
                                             />
                                           )}
                                         </InputMask>

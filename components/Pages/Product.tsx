@@ -24,7 +24,7 @@ import { formatMoney } from "../../helpers/money";
 import ReviewStars from "../../components/UI/ReviewStart";
 import QuickCart from "../../components/Cart/QuickCart";
 import ReviewCard from "../../components/ReviewCard";
- import ShippingList from "../../components/ShippingList";
+import ShippingList from "../../components/ShippingList";
 import { useState } from "react";
 import { useCart } from "../../context/CartContext";
 
@@ -237,6 +237,22 @@ export default function ProductContent({ products, product }: any) {
                   px={20}
                 >
                   Adicionar ao Carrinho
+                </Button>
+                <Button
+                  aria-label={"Adicionar ao favorito"}
+                  onClick={() => {
+                    axios
+                      .post(`/api/favorites?id_product=${product.id}`)
+                      .then((res) => {
+                        console.log(res);
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }}
+                  px={20}
+                >
+                  Adicionar ao favorito
                 </Button>
               </Flex>
             </Flex>
