@@ -84,9 +84,9 @@ export default function Favoritos() {
             </Text>
 
             <SimpleGrid columns={1} gap={2} w={"80%"}>
-              {listProducts.slice(0, 9).map((product: any) => (
+              {listProducts.map((item: any) => (
                 <Flex
-                  key={product.id}
+                  key={item.products.id}
                   flexDir={"column"}
                   gap={2}
                   w={"100%"}
@@ -102,29 +102,16 @@ export default function Favoritos() {
                       w="full"
                     >
                       <Flex align={"center"} gap={2}>
-                        <Image
-                          src={product.product_image[0].url}
-                          w={16}
-                          h={16}
-                          alt={product.title}
-                        />
                         <Flex flexDir={"column"} gap={0}>
-                          <Link
-                            href={`/produto/${product.id}`}
-                            color={"gray.800"}
-                            _hover={{ textDecoration: "underline" }}
-                          >
-                            <Text fontSize={"xs"}>{product.title}</Text>
-                          </Link>
+                          <Text fontSize={"xs"}>{item.products.title}</Text>                          
                           <Text fontSize={"sm"}>
-                            {formatMoney(product.price)}
+                            {formatMoney(item.products.price)}
                           </Text>
                         </Flex>
                       </Flex>
-                      {/* Add to cart */}
                       <Flex align={"center"} gap={2}>
                         <IconButton
-                          onClick={() => addToCart(product)}
+                          onClick={() => {}}
                           aria-label="Adicionar ao Carrinho"
                           icon={<BsCart3 />}
                         />
@@ -132,7 +119,7 @@ export default function Favoritos() {
                         <IconButton
                           onClick={() => {
                             axios
-                              .delete(`/api/favorites?id_product=${product.id}`)
+                              .delete(`/api/favorites?id_product=${item.products.id}`)
                               .then((res) => {
                                 fetchFavorite()
                               })
