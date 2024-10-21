@@ -84,7 +84,7 @@ export default function Favoritos() {
             </Text>
 
             <SimpleGrid columns={1} gap={2} w={"80%"}>
-              {listProducts.slice(0, 9).map((product) => (
+              {listProducts.slice(0, 9).map((product: any) => (
                 <Flex
                   key={product.id}
                   flexDir={"column"}
