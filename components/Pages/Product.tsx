@@ -27,6 +27,8 @@ import ReviewCard from "../../components/ReviewCard";
 import ShippingList from "../../components/ShippingList";
 import { useState } from "react";
 import { useCart } from "../../context/CartContext";
+// @ts-ignore
+import ReactStars from "react-rating-stars-component";
 
 export default function ProductContent({ products, product }: any) {
   const [mobile] = useMediaQuery("(max-width: 400px)");
@@ -359,38 +361,52 @@ export default function ProductContent({ products, product }: any) {
               >
                 Comente você também
               </Text>
-              {false ? (
-                <Flex mt={4}>
-                  <Alert status="success">
-                    <AlertIcon />
-                    Comentário enviado com sucesso!
-                  </Alert>
-                </Flex>
-              ) : (
-                <Formik
-                  initialValues={{ mensagem: "" }}
-                  onSubmit={(values, actions) => {
-                    console.log("values: ", values);
-                    console.log(actions);
-                    setTimeout(() => {
-                      actions.setSubmitting(false);
-                      //   setCommented(true);
-                      //   setTimeout(() => {
-                      //     setCommented(false);
-                      //   }, 3000);
-                    }, 1000);
-                  }}
-                >
-                  {({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    isSubmitting,
-                  }) => (
-                    <Form style={{ width: "100%" }}>
+              <Formik
+                initialValues={{ mensagem: "", grade: 0 }}
+                onSubmit={(values, actions) => {
+                  console.log(values)
+                  axios
+                    .post("/api/comment", {
+                      mensagem: values.mensagem,
+                      grade: values.grade,
+                      id_product: product.id,
+                    })
+                    .then((res: any) => {
+                      window.location.reload(false);
+                    })
+                    .catch((err: any) => {
+                      console.log(err);
+                    });
+                }}
+              >
+                {({ values, isSubmitting }) => (
+                  <Form style={{ width: "100%" }}>
+                    <Flex direction={"column"} alignItems={'center'}>
+                      <Field name="grade">
+                        {({ field, form }: any) => (
+                          <>
+                            <Text
+                              fontSize={mobile ? "sm" : "md"}
+                              fontWeight={"800"}
+                              color={"gray.800"}
+                              textTransform={"uppercase"}
+                            >
+                              Nota do produto
+                            </Text>
+                            <ReactStars
+                              count={5}
+                              size={24}
+                              isHalf
+                              onChange={(newValue) => {
+                                form.setFieldValue("grade", newValue)
+                              }}
+                              size={24}
+                              activeColor='#ffd700'
+                              color={'#f0f0f0'}
+                            />                            
+                          </>
+                        )}
+                      </Field>
                       <Field name="mensagem">
                         {({ field, form }: { field: any; form: any }) => (
                           <FormControl w={"full"}>
@@ -403,26 +419,25 @@ export default function ProductContent({ products, product }: any) {
                           </FormControl>
                         )}
                       </Field>
-                      <Center>
-                        <Button
-                          mt={4}
-                          w={mobile ? "100%" : "40%"}
-                          color={"white"}
-                          bg={"primary.500"}
-                          isLoading={isSubmitting}
-                          type="submit"
-                          _hover={{
-                            bg: "primary.600",
-                          }}
-                        >
-                          Avaliar
-                        </Button>
-                      </Center>
-                    </Form>
-                  )}
-                </Formik>
-              )}
-
+                    </Flex>
+                    <Center>
+                      <Button
+                        mt={4}
+                        w={mobile ? "100%" : "40%"}
+                        color={"white"}
+                        bg={"primary.500"}
+                        isLoading={isSubmitting}
+                        type="submit"
+                        _hover={{
+                          bg: "primary.600",
+                        }}
+                      >
+                        Avaliar
+                      </Button>
+                    </Center>
+                  </Form>
+                )}
+              </Formik>
               <ProductsSection
                 products={products}
                 title="Produtos relacionados"
