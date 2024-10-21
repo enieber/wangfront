@@ -40,26 +40,24 @@ const ShippingList = ({
         {shippingOptions
           .filter((item: any) => !item.error)
           .map((option: any) => (
-            <Box
+            <SimpleGrid
               key={option.id}
+              columns={2}
+              row={1}
               p={5}
               shadow="md"
               borderWidth="1px"
               borderRadius="md"
             >
-              <Stack
-                direction="row"
-                align="center"
-                justify="space-around"
-                my={5}
-              >
-                <Image
-                  w={50}
-                  height={30}
-                  boxSize={50}
-                  src={option.company.picture}
-                  alt={option.company.name}
-                />
+              <Image
+                w={"10vw"}
+                height={"10vh"}
+                m={5}
+                src={option.company.picture}
+                alt={option.company.name}
+              />
+
+              <Box>
                 <Heading size="md">{option.name}</Heading>
 
                 {option.error ? (
@@ -75,8 +73,8 @@ const ShippingList = ({
                     </Text>
                   </>
                 )}
-              </Stack>
-            </Box>
+              </Box>
+            </SimpleGrid>
           ))}
       </Stack>
     );
@@ -90,23 +88,24 @@ const ShippingList = ({
           .map((option: any) => (
             <SimpleGrid
               key={option.id}
-              columns={2}              
+              columns={2}
               row={1}
               p={5}
               shadow="md"
-              borderWidth="1px" borderRadius="md"
+              borderWidth="1px"
+              borderRadius="md"
             >
               <Radio value={String(option.id)} isDisabled={!!option.error}>
                 <Image
-                  w={'10vw'}
-                  height={'10vh'}
+                  w={"10vw"}
+                  height={"10vh"}
                   m={5}
                   src={option.company.picture}
                   alt={option.company.name}
                 />
               </Radio>
 
-              <Box  >
+              <Box>
                 <Heading size="md">{option.name}</Heading>
 
                 {option.error ? (
