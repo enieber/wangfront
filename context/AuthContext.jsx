@@ -53,21 +53,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  async function newPassword(values) {
-    try {
-      setIsLoading(true);
-      const data = {
-        old_password: values.old_password,
-        password: values.password,
-      }
-      await axios.put('/api/password', data);      
-      setIsLoading(false);      
-    } catch (err) {
-      setIsLoading(false);
-      throw err
-    }
-  }
-
   const updateUser = async (data) => {
     try {
       setIsLoading(true);
@@ -77,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       return res;
     } catch (err) {
       setIsLoading(false);
-      throw err
+      return { data: null };
     }
   };
   
@@ -112,7 +97,6 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         setUser,
         user,
-        newPassword,
         validUser,
         error
       }}
