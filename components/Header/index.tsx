@@ -28,37 +28,60 @@ import {
   MenuItem,
   MenuList,
   Skeleton,
-} from '@chakra-ui/react';
-import { FaRegHeart, FaRegUser, FaRegUserCircle } from 'react-icons/fa';
-import { FiInfo, FiSearch } from 'react-icons/fi';
-import { BsGridFill } from 'react-icons/bs';
-import { useContext } from 'react';
-import { BiSupport, BiMenu } from 'react-icons/bi';
-import { LegacyRef, RefObject, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import QuickCart from '../Cart/QuickCart';
-import { useAuth } from '../../context/AuthContext';
+} from "@chakra-ui/react";
+import { FaRegHeart, FaRegUser, FaRegUserCircle } from "react-icons/fa";
+import { FiInfo, FiSearch } from "react-icons/fi";
+import { BsGridFill } from "react-icons/bs";
+import { useContext } from "react";
+import { BiSupport, BiMenu } from "react-icons/bi";
+import { LegacyRef, RefObject, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import QuickCart from "../Cart/QuickCart";
+import { useAuth } from "../../context/AuthContext";
+import { set } from "react-hook-form";
 
-
-export default function Header({ menus, userServer }: any) {  
+export default function Header({ menus, userServer }: any) {
   const { login, logout, user, setUser, isLoading, aboutMe } = useAuth();
-  const [mobile] = useMediaQuery('(max-width: 400px)');
+  const [mobile] = useMediaQuery("(max-width: 400px)");
 
   useEffect(() => {
     if (!userServer) {
-      aboutMe()
+      aboutMe();
     } else {
-      setUser(userServer)
+      setUser(userServer);
     }
-  }, [])
-  
-  return (
-    <Flex as={'header'} direction={'column'} w={'full'}>
-      {!!mobile && <MenuMobile menuItems={menus} login={login} user={user} isLoading={isLoading} />}
-      {!mobile && <PrimaryMenu menuItems={menus} login={login} logout={logout} user={user} isLoading={isLoading} />}
+  }, []);
 
-      {!mobile && <SecondaryMenu menuItems={menus} login={login} logout={logout} user={user} isLoading={isLoading} />}
+  return (
+    <Flex as={"header"} direction={"column"} w={"full"}>
+      {!!mobile && (
+        <MenuMobile
+          menuItems={menus}
+          login={login}
+          user={user}
+          isLoading={isLoading}
+        />
+      )}
+      {!mobile && (
+        <PrimaryMenu
+          menuItems={menus}
+          login={login}
+          logout={logout}
+          user={user}
+          isLoading={isLoading}
+        />
+      )}
+
+      {!mobile && (
+        <SecondaryMenu
+          menuItems={menus}
+          login={login}
+          logout={logout}
+          user={user}
+          isLoading={isLoading}
+        />
+      )}
     </Flex>
   );
 }
@@ -76,54 +99,54 @@ const MenuMobile = (props: MenuProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<LegacyRef<HTMLButtonElement>>();
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const router = useRouter();
 
-  const handleSearch = () => {
-    router.push('/busca?q=' + search);
+  const handleSearch = (busca) => {
+    router.push(`/busca?q=${busca}`);
   };
   const handleGoToLogin = () => {
-    router.push('/conta/login');
+    router.push("/conta/login");
   };
 
   return (
     <Flex my={2}>
-      <BiMenu onClick={onOpen} fontSize={'38px'} fontWeight={'100'} />
-      <Drawer isOpen={isOpen} placement="left" size={'xs'} onClose={onClose}>
+      <BiMenu onClick={onOpen} fontSize={"38px"} fontWeight={"100"} />
+      <Drawer isOpen={isOpen} placement="left" size={"xs"} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton right={'-35px'} bg={'white'} />
+          <DrawerCloseButton right={"-35px"} bg={"white"} />
           <DrawerHeader borderBottomWidth="1px">
             <Flex>
               {user !== null ? (
                 <Button
                   leftIcon={<FaRegUserCircle color="#2196f3" size={20} />}
-                  fontWeight={'small'}
-                  variant={'link'}
+                  fontWeight={"small"}
+                  variant={"link"}
                   mr={5}
                   colorScheme="black"
-                  _hover={{ underline: 'none', color: 'primary.700' }}
+                  _hover={{ underline: "none", color: "primary.700" }}
                 >
-                  {user.name.split(' ')[0]}
+                  {user.name.split(" ")[0]}
                 </Button>
               ) : (
                 <Button
                   leftIcon={<BsGridFill color="#2196f3" size={20} />}
-                  fontWeight={'small'}
-                  variant={'link'}
+                  fontWeight={"small"}
+                  variant={"link"}
                   colorScheme="black"
-                  _hover={{ underline: 'none', color: 'primary.700' }}
+                  _hover={{ underline: "none", color: "primary.700" }}
                 >
                   Login
                 </Button>
               )}
               <Button
                 leftIcon={<BsGridFill color="#2196f3" size={20} />}
-                fontWeight={'small'}
-                variant={'link'}
+                fontWeight={"small"}
+                variant={"link"}
                 colorScheme="black"
-                _hover={{ underline: 'none', color: 'primary.700' }}
+                _hover={{ underline: "none", color: "primary.700" }}
               >
                 Meus pedidos
               </Button>
@@ -131,65 +154,66 @@ const MenuMobile = (props: MenuProps) => {
           </DrawerHeader>
 
           <DrawerBody px={0}>
-            <Flex direction={'column'}>
+            <Flex direction={"column"}>
               <Text
-                bg={'primary.500'}
-                color={'white'}
-                fontSize={'sm'}
-                w={'100%'}
-                h={'40px'}
+                bg={"primary.500"}
+                color={"white"}
+                fontSize={"sm"}
+                w={"100%"}
+                h={"40px"}
                 px={3}
                 py={2}
-                fontWeight={'500'}
+                fontWeight={"500"}
               >
                 NAVEGUE PELA LOJA
               </Text>
-              <Flex direction={'column'} mx={4} my={4}>
-                <Text fontWeight={'600'} fontSize={'sm'}>
+              <Flex direction={"column"} mx={4} my={4}>
+                <Text fontWeight={"600"} fontSize={"sm"}>
                   Categorias
                 </Text>
-                {menuItems && menuItems.map((item: any, index: number) => (
-                  <Flex key={index} direction={'column'}>
-                    <Link
-                      key={index}
-                      href={'/categoria/' + item.name.toLowerCase()}
-                      fontSize={item.children.length >= 1 ? 'sm' : 'xs'}
-                      fontWeight={item.children.length >= 1 ? '600' : '400'}
-                      _hover={{ color: 'primary.600' }}
-                      py={2}
-                      px={3}
-                    >
-                      {item.name}
-                    </Link>
-                    {item.children.map((subItem: any, subIndex: number) => (
+                {menuItems &&
+                  menuItems.map((item: any, index: number) => (
+                    <Flex key={index} direction={"column"}>
                       <Link
-                        key={subIndex}
-                        href={'/categoria/' + subItem.name.toLowerCase()}
-                        fontSize={'xs'}
-                        fontWeight={'400'}
-                        _hover={{ color: 'primary.600' }}
+                        key={index}
+                        href={"/categoria/" + item.name.toLowerCase()}
+                        fontSize={item.children.length >= 1 ? "sm" : "xs"}
+                        fontWeight={item.children.length >= 1 ? "600" : "400"}
+                        _hover={{ color: "primary.600" }}
                         py={2}
                         px={3}
-                        ml={3}
                       >
-                        {subItem.name}
+                        {item.name}
                       </Link>
-                    ))}
-                  </Flex>
-                ))}
+                      {item.children.map((subItem: any, subIndex: number) => (
+                        <Link
+                          key={subIndex}
+                          href={"/categoria/" + subItem.name.toLowerCase()}
+                          fontSize={"xs"}
+                          fontWeight={"400"}
+                          _hover={{ color: "primary.600" }}
+                          py={2}
+                          px={3}
+                          ml={3}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </Flex>
+                  ))}
               </Flex>
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-      <Container maxW={'container.xl'}>
-        <Flex direction={'row'} justify={'space-between'} align={'center'}>
-          <Link href={'/'}>
-            <Image w={100} src={'/logo.png'} alt={'Chakra UI Logo'} />
+      <Container maxW={"container.xl"}>
+        <Flex direction={"row"} justify={"space-between"} align={"center"}>
+          <Link href={"/"}>
+            <Image w={100} src={"/logo.png"} alt={"Chakra UI Logo"} />
           </Link>
-          <Flex justify={'flex-end'} gap={4} align={'center'}>
+          <Flex justify={"flex-end"} gap={4} align={"center"}>
             <FaRegUserCircle onClick={() => handleGoToLogin()} size={24} />
-            <FiSearch  size={24} />
+            <FiSearch size={24} />
             <QuickCart />
           </Flex>
         </Flex>
@@ -200,56 +224,78 @@ const MenuMobile = (props: MenuProps) => {
 
 const PrimaryMenu = (props: MenuProps) => {
   const { menuItems, login, user, isLoading, logout } = props;
-  
-  const [search, setSearch] = useState('');
-  
+  const params = useSearchParams();
+  const [search, setSearch] = useState("");
+
   const router = useRouter();
-  const handleSearch = () => {
-    router.push('/busca?q=' + search);
+
+  useEffect(() => {
+    const query = params.get("q");
+    if (query) {
+      setSearch(query)
+    }
+  }, []);
+
+  const handleSearch = (busca) => {
+    router.push(`/busca?q=${busca}`);
   };
+
 
   const handleGoToFavorites = () => {
     if (user) {
-      router.push('/conta');
+      router.push("/conta");
     } else {
-      router.push('/conta/login');
+      router.push("/conta/login");
     }
   };
 
   if (isLoading || user == null) {
     return (
-      <Flex w={'full'} px={8} py={4} align={'center'} borderBottom={'1px solid'} borderBottomColor={'gray.100'}>
-        <Container maxW={'container.xl'}>
-          <Flex justify={'space-between'} align={'center'}>
-            <Link href={'/'}>
-              <Image src={'/logo.png'} alt={'Chakra UI Logo'} />
+      <Flex
+        w={"full"}
+        px={8}
+        py={4}
+        align={"center"}
+        borderBottom={"1px solid"}
+        borderBottomColor={"gray.100"}
+      >
+        <Container maxW={"container.xl"}>
+          <Flex justify={"space-between"} align={"center"}>
+            <Link href={"/"}>
+              <Image src={"/logo.png"} alt={"Chakra UI Logo"} />
             </Link>
             <Flex as="form">
               <InputGroup size="lg" bg="gray.100">
                 <Input
                   placeholder="Olá, o que está procurando hoje?"
                   _focus={{
-                    outerHeight: 'none',
-                    borderColor: 'none',
-                    boxShadow: 'none'
+                    outerHeight: "none",
+                    borderColor: "none",
+                    boxShadow: "none",
                   }}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
                 <InputRightElement>
-                  <Button size="sm" variant={'ghost'}>
+                  <Button
+                    size="sm"
+                    onClick={() => handleSearch(search)}
+                    variant={"ghost"}
+                  >
                     <FiSearch />
                   </Button>
                 </InputRightElement>
               </InputGroup>
             </Flex>
             <Flex>
-            <Popover trigger="hover">
+              <Popover trigger="hover">
                 <PopoverTrigger>
                   <Button
                     leftIcon={<BiSupport size={25} />}
-                    fontWeight={'normal'}
-                    variant={'link'}
+                    fontWeight={"normal"}
+                    variant={"link"}
                     colorScheme="black"
-                    _hover={{ underline: 'none', color: 'primary.600' }}
+                    _hover={{ underline: "none", color: "primary.600" }}
                   >
                     Atendimento
                   </Button>
@@ -257,30 +303,39 @@ const PrimaryMenu = (props: MenuProps) => {
                 <PopoverContent>
                   <PopoverArrow />
                   <PopoverBody>
-                    <Flex flexDir={'column'} p={4} textAlign={'center'}>
-                      <Text fontWeight={'bold'}>E-mail</Text>
-                      <Link href={`mailto:atendimento@toycity.com.br`} fontSize={'xs'} _hover={{ textDecoration: 'underline' }}>
-                      <Text>atendimento@toycity.com.br</Text>
-                    </Link>
+                    <Flex flexDir={"column"} p={4} textAlign={"center"}>
+                      <Text fontWeight={"bold"}>E-mail</Text>
+                      <Link
+                        href={`mailto:atendimento@toycity.com.br`}
+                        fontSize={"xs"}
+                        _hover={{ textDecoration: "underline" }}
+                      >
+                        <Text>atendimento@toycity.com.br</Text>
+                      </Link>
                     </Flex>
                   </PopoverBody>
                 </PopoverContent>
               </Popover>
             </Flex>
             <Flex>
-            <Button
+              <Button
                 leftIcon={<FaRegHeart size={25} />}
-                fontWeight={'normal'}
-                variant={'link'}
+                fontWeight={"normal"}
+                variant={"link"}
                 colorScheme="black"
-                _hover={{ underline: 'none', color: 'primary.600' }}
+                _hover={{ underline: "none", color: "primary.600" }}
                 onClick={() => handleGoToFavorites()}
               >
                 Favoritos
               </Button>
             </Flex>
             <Flex gap={10}>
-              <Link flexDirection={'row'} gap={2} display={'flex'} href={'/conta/login'}>
+              <Link
+                flexDirection={"row"}
+                gap={2}
+                display={"flex"}
+                href={"/conta/login"}
+              >
                 <FaRegUserCircle size={25} />
                 Login
               </Link>
@@ -293,27 +348,37 @@ const PrimaryMenu = (props: MenuProps) => {
   }
 
   return (
-    <Flex w={'full'} px={8} py={4} align={'center'} borderBottom={'1px solid'} borderBottomColor={'gray.100'}>
-      <Container maxW={'container.xl'}>
-        <Flex justify={'space-between'} align={'center'}>
-          <Link href={'/'}>
-            <Image src={'/logo.png'} alt={'Chakra UI Logo'} />
+    <Flex
+      w={"full"}
+      px={8}
+      py={4}
+      align={"center"}
+      borderBottom={"1px solid"}
+      borderBottomColor={"gray.100"}
+    >
+      <Container maxW={"container.xl"}>
+        <Flex justify={"space-between"} align={"center"}>
+          <Link href={"/"}>
+            <Image src={"/logo.png"} alt={"Chakra UI Logo"} />
           </Link>
           <Flex as="form">
             <InputGroup size="lg" bg="gray.100">
               <Input
                 placeholder="Olá, o que está procurando hoje?"
                 _focus={{
-                  outerHeight: 'none',
-                  borderColor: 'none',
-                  boxShadow: 'none'
+                  outerHeight: "none",
+                  borderColor: "none",
+                  boxShadow: "none",
                 }}
                 value={search}
-                onChange={e => setSearch(e.target.value)}
-              
+                onChange={(e) => setSearch(e.target.value)}
               />
               <InputRightElement>
-                <Button size="sm" onClick={handleSearch} variant={'ghost'}>
+                <Button
+                  size="sm"
+                  onClick={() => handleSearch(search)}
+                  variant={"ghost"}
+                >
                   <FiSearch />
                 </Button>
               </InputRightElement>
@@ -325,10 +390,10 @@ const PrimaryMenu = (props: MenuProps) => {
                 <PopoverTrigger>
                   <Button
                     leftIcon={<BiSupport size={25} />}
-                    fontWeight={'normal'}
-                    variant={'link'}
+                    fontWeight={"normal"}
+                    variant={"link"}
                     colorScheme="black"
-                    _hover={{ underline: 'none', color: 'primary.600' }}
+                    _hover={{ underline: "none", color: "primary.600" }}
                   >
                     Atendimento
                   </Button>
@@ -336,11 +401,15 @@ const PrimaryMenu = (props: MenuProps) => {
                 <PopoverContent>
                   <PopoverArrow />
                   <PopoverBody>
-                    <Flex flexDir={'column'} p={4} textAlign={'center'}>
-                      <Text fontWeight={'bold'}>E-mail</Text>
-                      <Link href={`mailto:atendimento@toycity.com.br`} fontSize={'xs'} _hover={{ textDecoration: 'underline' }}>
-                      <Text>atendimento@toycity.com.br</Text>
-                    </Link>
+                    <Flex flexDir={"column"} p={4} textAlign={"center"}>
+                      <Text fontWeight={"bold"}>E-mail</Text>
+                      <Link
+                        href={`mailto:atendimento@toycity.com.br`}
+                        fontSize={"xs"}
+                        _hover={{ textDecoration: "underline" }}
+                      >
+                        <Text>atendimento@toycity.com.br</Text>
+                      </Link>
                     </Flex>
                   </PopoverBody>
                 </PopoverContent>
@@ -349,10 +418,10 @@ const PrimaryMenu = (props: MenuProps) => {
             <Box>
               <Button
                 leftIcon={<FaRegHeart size={25} />}
-                fontWeight={'normal'}
-                variant={'link'}
+                fontWeight={"normal"}
+                variant={"link"}
                 colorScheme="black"
-                _hover={{ underline: 'none', color: 'primary.600' }}
+                _hover={{ underline: "none", color: "primary.600" }}
                 onClick={() => handleGoToFavorites()}
               >
                 Favoritos
@@ -364,25 +433,28 @@ const PrimaryMenu = (props: MenuProps) => {
                   <PopoverTrigger>
                     <Button
                       leftIcon={<FaRegUserCircle size={25} />}
-                      fontWeight={'normal'}
-                      variant={'link'}
+                      fontWeight={"normal"}
+                      variant={"link"}
                       colorScheme="black"
-                      _hover={{ underline: 'none', color: 'primary.600' }}
+                      _hover={{ underline: "none", color: "primary.600" }}
                     >
-                      {user.name.split(' ')[0]}
+                      {user.name.split(" ")[0]}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent w="200px">
                     <PopoverArrow />
                     <PopoverBody>
-                      <Flex flexDir={'column'} p={2} gap={3}>
-                        <Link href="/conta" _hover={{ underline: 'none', color: 'primary.600' }}>
+                      <Flex flexDir={"column"} p={2} gap={3}>
+                        <Link
+                          href="/conta"
+                          _hover={{ underline: "none", color: "primary.600" }}
+                        >
                           Minha Conta
                         </Link>
                         <Button
                           onClick={() => {
                             logout().then((res: any) => {
-                              router.push('/');
+                              router.push("/");
                             });
                           }}
                         >
@@ -395,10 +467,10 @@ const PrimaryMenu = (props: MenuProps) => {
               ) : (
                 <Button
                   leftIcon={<FaRegUserCircle size={25} />}
-                  fontWeight={'normal'}
-                  variant={'link'}
+                  fontWeight={"normal"}
+                  variant={"link"}
                   colorScheme="black"
-                  _hover={{ underline: 'none', color: 'primary.600' }}
+                  _hover={{ underline: "none", color: "primary.600" }}
                 >
                   Login
                 </Button>
@@ -429,68 +501,83 @@ const SecondaryMenu = (props: MenuProps) => {
 
   return (
     <Flex
-      w={'full'}
+      w={"full"}
       px={8}
       py={4}
-      justify={'center'}
-      align={'center'}
-      borderBottom={'1px solid'}
-      borderBottomColor={'gray.100'}
+      justify={"center"}
+      align={"center"}
+      borderBottom={"1px solid"}
+      borderBottomColor={"gray.100"}
     >
-      <Container maxW={'container.xl'}>
-        <Flex justify={'center'} align={'center'}>
-          {menuItems && menuItems.map((item: any, index: number) => (
-            <Container key={index}>
-              {item.children.length >= 1 ? (
-                <Menu key={index}>
-                  <MenuButton
-                    fontSize={'sm'}
-                    fontWeight={'bold'}
-                    color={'gray.600'}
-                    transition={'color 0.3s'}
-                  >
-                    {item.name}
-                  </MenuButton>
-                  <MenuList>
-                    {item.children.map((subItem: any, subIndex: number) => (
-                      <MenuItem
-                        minH="48px"
-                        key={subIndex}
-                        onClick={() => navigateToCategory(subItem.name.toLowerCase())}
-                      >
-                        <Text
-                          fontSize={'sm'}
-                          fontWeight={'bold'}
-                          color={itemHovered === null ? 'gray.600' : item === itemHovered ? 'gray.600' : 'gray.300'}
-                          transition={'color 0.3s'}
+      <Container maxW={"container.xl"}>
+        <Flex justify={"center"} align={"center"}>
+          {menuItems &&
+            menuItems.map((item: any, index: number) => (
+              <Container key={index}>
+                {item.children.length >= 1 ? (
+                  <Menu key={index}>
+                    <MenuButton
+                      fontSize={"sm"}
+                      fontWeight={"bold"}
+                      color={"gray.600"}
+                      transition={"color 0.3s"}
+                    >
+                      {item.name}
+                    </MenuButton>
+                    <MenuList>
+                      {item.children.map((subItem: any, subIndex: number) => (
+                        <MenuItem
+                          minH="48px"
+                          key={subIndex}
+                          onClick={() =>
+                            navigateToCategory(subItem.name.toLowerCase())
+                          }
                         >
-                          {subItem.name}
-                        </Text>
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
-              ) : (
-                <Link
-                  key={index}
-                  href={'/categoria/' + item.name.toLowerCase()}
-                  _hover={{ textDecoration: 'none' }}
-                  px={4}
-                  onMouseEnter={() => handleHover(item)}
-                  onMouseLeave={() => setItemHovered(null)}
-                >
-                  <Text
-                    fontSize={'sm'}
-                    fontWeight={'bold'}
-                    color={itemHovered === null ? 'gray.600' : item === itemHovered ? 'gray.600' : 'gray.300'}
-                    transition={'color 0.3s'}
+                          <Text
+                            fontSize={"sm"}
+                            fontWeight={"bold"}
+                            color={
+                              itemHovered === null
+                                ? "gray.600"
+                                : item === itemHovered
+                                  ? "gray.600"
+                                  : "gray.300"
+                            }
+                            transition={"color 0.3s"}
+                          >
+                            {subItem.name}
+                          </Text>
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </Menu>
+                ) : (
+                  <Link
+                    key={index}
+                    href={"/categoria/" + item.name.toLowerCase()}
+                    _hover={{ textDecoration: "none" }}
+                    px={4}
+                    onMouseEnter={() => handleHover(item)}
+                    onMouseLeave={() => setItemHovered(null)}
                   >
-                    {item.name}
-                  </Text>
-                </Link>
-              )}
-            </Container>
-          ))}
+                    <Text
+                      fontSize={"sm"}
+                      fontWeight={"bold"}
+                      color={
+                        itemHovered === null
+                          ? "gray.600"
+                          : item === itemHovered
+                            ? "gray.600"
+                            : "gray.300"
+                      }
+                      transition={"color 0.3s"}
+                    >
+                      {item.name}
+                    </Text>
+                  </Link>
+                )}
+              </Container>
+            ))}
           {menuItems && menuItems.length === 0 && <Skeleton height="20px" />}
         </Flex>
       </Container>
