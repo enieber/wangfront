@@ -1,7 +1,7 @@
 //
 import axios from "axios";
 import { adapterToClient, adapterUpdateUser } from "../../helpers/adapter";
-import { getToken } from "../../helpers/header";
+import { getToken, getUserFromToken } from "../../helpers/header";
 
 export default async function handler(request, res) {
   try {
@@ -12,9 +12,8 @@ export default async function handler(request, res) {
         .json({ message: "Unauthorized: No token provided" });
     }
     if (request.method === "GET") {
-      // Faz a requisição para o endpoint de usuário com o token
       const response = await axios.get(
-        `${process.env.URL}/platform/list-most-sold`,
+        `${process.env.URL}/platform/get-user-favorites`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,8 +36,8 @@ export default async function handler(request, res) {
       res.status(200).json(response.data);
     } else if (request.method === "POST") {
       const { id_product } = request.query;
-      const response = await axios.delete(
-        `${process.env.URL}/platform/remove-favorite/${id_product}`,
+      const response = await axios.post(
+        `${process.env.URL}/platform/set-favorite/${id_product}`,
         {},
         {
           headers: {
