@@ -210,7 +210,7 @@ const PrimaryMenu = (props: MenuProps) => {
 
   const handleGoToFavorites = () => {
     if (user) {
-      router.push('/conta/favoritos');
+      router.push('/conta');
     } else {
       router.push('/conta/login');
     }
@@ -446,7 +446,7 @@ const SecondaryMenu = (props: MenuProps) => {
                   <MenuButton
                     fontSize={'sm'}
                     fontWeight={'bold'}
-                    color={item == itemHovered ? 'gray.600' : 'gray.300'}
+                    color={'gray.600'}
                     transition={'color 0.3s'}
                   >
                     {item.name}
