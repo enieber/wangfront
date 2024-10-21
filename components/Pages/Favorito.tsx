@@ -24,19 +24,30 @@ export default function Favoritos() {
   const { addToCart } = useCart();
   const [listProducts, setProducs] = useState([]);
   if (!user) {
-    return null
+    return null;
+  }
+
+  function fetchFavorite() {
+    axios
+    .get("/api/favorites")
+    .then((res) => {
+      setProducs(res.data);
+    })
+    .catch((err) => {
+      console.log("error", err);
+    });
   }
 
   useEffect(() => {
-    
-    axios.get('/api/favorites')
-      .then(res => {
-        setProducs(res.data)        
-      })
-      .catch(err => {
-        console.log('error', err)
-      })
-  }, [user])
+    let mount = true
+    if (mount) {
+      fetchFavorite()
+    }
+
+    return () => {
+      mount = false
+    }
+  }, [user]);
 
   return (
     <Flex as={"main"} direction={"column"} w={"full"} py={10}>
@@ -51,7 +62,6 @@ export default function Favoritos() {
               >
                 {user.name}
               </Text>
-             
             </Flex>
           </Flex>
           <Flex flexDir={"column"} gap={4} w={"80%"}>
@@ -100,7 +110,7 @@ export default function Favoritos() {
                         />
                         <Flex flexDir={"column"} gap={0}>
                           <Link
-                            href={"#"}
+                            href={`/produto/${product.id}`}
                             color={"gray.800"}
                             _hover={{ textDecoration: "underline" }}
                           >
@@ -119,7 +129,20 @@ export default function Favoritos() {
                           icon={<BsCart3 />}
                         />
 
-                        <IconButton aria-label="Remover" icon={<TbTrash />} />
+                        <IconButton
+                          onClick={() => {
+                            axios
+                              .delete(`/api/favorites?id_product=${product.id}`)
+                              .then((res) => {
+                                fetchFavorite()
+                              })
+                              .catch((err) => {
+                                console.log(err);
+                              });
+                          }}
+                          aria-label="Remover"
+                          icon={<TbTrash />}
+                        />
                       </Flex>
                     </Flex>
                   </Flex>
