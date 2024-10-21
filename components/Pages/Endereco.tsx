@@ -6,6 +6,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Text,
   Heading,
   Input,
   InputGroup,
@@ -38,7 +39,7 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field } from "formik";
@@ -109,35 +110,35 @@ const steps = [
 export default function Endereco({ states }: any) {
   const [mobile] = useMediaQuery("(max-width: 400px)");
   const { user } = useAuth();
-  const router = useRouter();
-  const [isNotEdit, enableNotEdit] = useState(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  function saveAddress(valus: any) {}
+  const [addressList, setAddressList] = useState([]);
 
-  async function searchAddressInfo(cep: any, setField: any) {
-    setLoading(true);
-    try {
-      const res = await axios.get("/api/cep", {
-        params: { cep },
-      });
-      const address = res.data;
-      setField("endereco", address.street);
-      setField("bairro", address.neighborhood);
-      setField("cidade", address.city);
-      const state: any = states.find(
-        (item: any) => item.value === address.state
-      );
-      setField("estado", state.value);
-    } catch (err) {
-      console.log(err);
-      setField("endereco", "");
-      setField("bairro", "");
-      setField("cidade", "");
-    } finally {
-      setLoading(false);
+  function fetchAddress() {
+    if (user) {
+      axios
+        .get("/api/address", {
+          params: {
+            user_id: user.id,
+          },
+        })
+        .then((res) => {
+          setAddressList(res.data);
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
     }
   }
-  console.log(user);
+  useEffect(() => {
+    let mount = true;
+    if (mount) {
+      fetchAddress();
+    }
+
+    return () => {
+      mount = false;
+    };
+  }, [user]);
+
   return (
     <Flex direction={"column"} as={"main"} w={"full"}>
       <Flex p={10}>
@@ -169,7 +170,43 @@ export default function Endereco({ states }: any) {
                     gap={10}
                     my={4}
                   >
-                   
+                    <Flex align={"center"} gap={2}>
+                      <Text
+                        textTransform={"uppercase"}
+                        color={"primary.600"}
+                        fontWeight={"bold"}
+                      >
+                        Lista de Endereços
+                      </Text>
+                    </Flex>
+                    <SimpleGrid columns={1} gap={2} w={"80%"}>
+                      {addressList.map((address: any) => (
+                        <Flex
+                          key={address.id}
+                          flexDir={"column"}
+                          gap={2}
+                          w={"100%"}
+                          borderBottom={"1px solid"}
+                          borderBottomColor={"gray.100"}
+                          pb={2}
+                        >
+                          <Flex
+                            w={"100%"}
+                            justify={"space-between"}
+                            align={"center"}
+                          >
+                            <Flex
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              gap={2}
+                              w="full"
+                            >
+                              <Text fontSize={"xs"}>{address.name}</Text>
+                            </Flex>
+                          </Flex>
+                        </Flex>
+                      ))}
+                    </SimpleGrid>
                   </Flex>
                 </TabPanel>
               </TabPanels>
