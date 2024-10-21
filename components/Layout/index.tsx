@@ -14,7 +14,7 @@ export default function Layout(props: any) {
     <ChakraProvider theme={theme}>
     <AuthProvider>
       <CartProvider>
-        <Header user={user} menus={menus} />
+        <Header userServer={user} menus={menus} />
         <Flex as={"main"} direction={"column"} w={"full"}>
           {children}
         </Flex>

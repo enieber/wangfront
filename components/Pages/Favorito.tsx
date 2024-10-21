@@ -12,15 +12,43 @@ import {
 
 import { BsCart3 } from "react-icons/bs";
 import { IoStarSharp } from "react-icons/io5";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { formatMoney } from "../../helpers/money";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import axios from "axios";
 
 export default function Favoritos() {
   const { user } = useAuth();
-  const { cartItems } = useCart();
+  const { addToCart } = useCart();
+  const [listProducts, setProducs] = useState([]);
+  if (!user) {
+    return null;
+  }
+
+  function fetchFavorite() {
+    axios
+    .get("/api/favorites")
+    .then((res) => {
+      setProducs(res.data);
+    })
+    .catch((err) => {
+      console.log("error", err);
+    });
+  }
+
+  useEffect(() => {
+    let mount = true
+    if (mount) {
+      fetchFavorite()
+    }
+
+    return () => {
+      mount = false
+    }
+  }, [user]);
+
   return (
     <Flex as={"main"} direction={"column"} w={"full"} py={10}>
       <Container maxW={"container.xl"}>
@@ -34,7 +62,6 @@ export default function Favoritos() {
               >
                 {user.name}
               </Text>
-             
             </Flex>
           </Flex>
           <Flex flexDir={"column"} gap={4} w={"80%"}>
@@ -57,7 +84,7 @@ export default function Favoritos() {
             </Text>
 
             <SimpleGrid columns={1} gap={2} w={"80%"}>
-              {cartItems.slice(0, 9).map((product: any) => (
+              {listProducts.slice(0, 9).map((product) => (
                 <Flex
                   key={product.id}
                   flexDir={"column"}
@@ -83,7 +110,7 @@ export default function Favoritos() {
                         />
                         <Flex flexDir={"column"} gap={0}>
                           <Link
-                            href={"#"}
+                            href={`/produto/${product.id}`}
                             color={"gray.800"}
                             _hover={{ textDecoration: "underline" }}
                           >
@@ -97,11 +124,25 @@ export default function Favoritos() {
                       {/* Add to cart */}
                       <Flex align={"center"} gap={2}>
                         <IconButton
+                          onClick={() => addToCart(product)}
                           aria-label="Adicionar ao Carrinho"
                           icon={<BsCart3 />}
                         />
 
-                        <IconButton aria-label="Remover" icon={<TbTrash />} />
+                        <IconButton
+                          onClick={() => {
+                            axios
+                              .delete(`/api/favorites?id_product=${product.id}`)
+                              .then((res) => {
+                                fetchFavorite()
+                              })
+                              .catch((err) => {
+                                console.log(err);
+                              });
+                          }}
+                          aria-label="Remover"
+                          icon={<TbTrash />}
+                        />
                       </Flex>
                     </Flex>
                   </Flex>

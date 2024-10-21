@@ -4,6 +4,7 @@ import React from 'react';
 import ReviewStars from '../UI/ReviewStart';
 import { formatMoney } from '../../helpers/money';
 import { useCart } from '../../context/CartContext';
+import axios from 'axios';
 
 
 export default function ProductItem(props: any) {
@@ -66,9 +67,21 @@ export default function ProductItem(props: any) {
               via Pix
             </Text>
           </Flex>
-          <Flex w={'full'} justifyContent={'center'} mt={2}>
+          <Flex w={'full'} justifyContent={'center'} mt={2} direction={'column'} gap={5}>
             <Button aria-label={'Adicionar ao carrinho'} onClick={() => addToCart(props)} px={20}>
               Adicionar ao Carrinho
+            </Button>
+            <Button aria-label={'Adicionar ao favorito'} onClick={() => {
+               axios
+               .post(`/api/favorites?id_product=${props.id}`)
+               .then((res) => {
+                 console.log(res)
+               })
+               .catch((err) => {
+                 console.log(err);
+               });
+            }} px={20}>
+            Adicionar ao favorito
             </Button>
           </Flex>
         </Flex>

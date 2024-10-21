@@ -28,19 +28,20 @@ export default function Login({ user, menus }: HomeProps) {
 export async function getServerSideProps(context: any) {
   let user = null;
   try {
-    const headers = builderHeader(context);
+    let headers = builderHeader(context);
     if (headers) {
-      const response = await axios.get(`${process.env.URL_LOCAL}/platform/me`, headers)
-      user = response.data
+      try {
+        const response = await axios.get(`${process.env.URL}/platform/me`, headers)
+        user = response.data
+      } catch (err) {
+        context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
+        headers = {}
+        console.log(err)
+      }
     } 
     const [menus] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
-
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
 
     return {
       props: {
