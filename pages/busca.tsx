@@ -4,7 +4,14 @@ import axios from "axios";
 import { builderHeader } from "../helpers/header";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Box, Container, Flex, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  SimpleGrid,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import ProductItem from "../components/Products/ProductItem";
 
 const ProductContent = dynamic(() => import("../components/Pages/Product"), {
@@ -66,26 +73,24 @@ export default function ProductSearchPage({ user, categories }: any) {
 
   return (
     <Layout user={user} menus={categories}>
-      
       <Flex as={"main"} direction={"column"} w={"full"} p={10}>
-      <Container maxW={"container.xl"}>
-                <Text
-                  textTransform={"uppercase"}
-                  color={"primary.600"}
-                  fontWeight={"bold"}
-                >
-                  Busca de produtos
-                </Text>
-       <Flex direction={"column"} gap={4} >
-      <SimpleGrid columns={3} gap={10} w={"100%"}>
-        {products.map((product: any) => (
-          <ProductItem key={product.id} {...product} />
-        ))}
-      </SimpleGrid>
+        <Container maxW={"container.xl"}>
+          <Text
+            textTransform={"uppercase"}
+            color={"primary.600"}
+            fontWeight={"bold"}
+          >
+            Busca de produtos
+          </Text>
+          <Flex direction={"column"} gap={4}>
+            <SimpleGrid columns={3} gap={10} w={"100%"}>
+              {products.map((product: any) => (
+                <ProductItem key={product.id} {...product} />
+              ))}
+            </SimpleGrid>
+          </Flex>
+        </Container>
       </Flex>
-
-      </Container>
-    </Flex>
     </Layout>
   );
 }
