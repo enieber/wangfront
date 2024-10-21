@@ -111,7 +111,7 @@ export default function Favoritos() {
                       </Flex>
                       <Flex align={"center"} gap={2}>
                         <IconButton
-                          onClick={() => addToCart(product)}
+                          onClick={() => {}}
                           aria-label="Adicionar ao Carrinho"
                           icon={<BsCart3 />}
                         />
