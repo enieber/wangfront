@@ -32,17 +32,16 @@ export default function Home({
   return (
     <Layout menus={menus} user={user}>
       <Carousel full items={banners} Render={Banner} />
-      <FeatureImagesSection items={featuresFooter} columns={1} />
+      <FeatureImagesSection items={features} columns={1} />
       <ProductsSection
         products={productsWeeklyHighlight}
         title="Destaques da semana"
       />
       <FeatureImagesSection items={featuresFooter} columns={1} />
       <ProductsSection
-        products={productsWeeklyHighlight}
-        title="Destaques da semana"
+        products={productsMostSold}
+        title="Mais vendidos"
       />
-      <Header user={user} menus={menus} />
     </Layout>
   );
 }
