@@ -372,7 +372,7 @@ export default function ProductContent({ products, product }: any) {
                       id_product: product.id,
                     })
                     .then((res: any) => {
-                      window.location.reload(false);
+                      window.location.reload();
                     })
                     .catch((err: any) => {
                       console.log(err);
@@ -395,7 +395,6 @@ export default function ProductContent({ products, product }: any) {
                             </Text>
                             <ReactStars
                               count={5}
-                              size={24}
                               isHalf
                               onChange={(newValue) => {
                                 form.setFieldValue("grade", newValue)
