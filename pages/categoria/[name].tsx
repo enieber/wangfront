@@ -15,6 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import ProductItem from "../../components/Products/ProductItem";
 import Layout from "../../components/Layout";
 import { builderHeader } from "../../helpers/header";
+import { useRouter } from "next/router";
 
 interface CategoriaProps {
   categories: any[];
@@ -31,6 +32,7 @@ export default function Categoria({
 }: CategoriaProps) {
   const [mobile] = useMediaQuery("(max-width: 400px)");
   const sortByPrice = 2;
+  const router = useRouter()
   
   return (
     <Layout user={user} menus={categories}>
@@ -92,8 +94,20 @@ export default function Categoria({
                     icon={
                       sort === 'up' ? <ArrowUpIcon /> : <ArrowDownIcon />
                     }
-                    value={sort}
-                    onChange={() => {}}
+                    value={sort === 'up' ? 1:2}
+                    onChange={(i) => {
+                      if (sort === 'up') {
+                        router.push({
+                          pathname: router.pathname, // Mantém a rota atual
+                          query: { ...router.query, sort: 'down' }, // Atualiza apenas o parâmetro 'sort'
+                        });
+                      } else {
+                        router.push({
+                          pathname: router.pathname, // Mantém a rota atual
+                          query: { ...router.query, sort: 'up' }, // Atualiza apenas o parâmetro 'sort'
+                        });
+                      }
+                    }}
                     size="md"
                   >
                     <option value={1}>Maior valor</option>
@@ -142,7 +156,7 @@ export async function getServerSideProps(context: any) {
   let user = null;
   try {
     const product_categories = context.params.name;
-    const sort = context.query.sort ? context.query.sort : 'up';
+    const sort = context.query.sort ? context.query.sort : 'down';
     let headers = builderHeader(context);
     if (headers) {
       try {
@@ -194,7 +208,7 @@ export async function getServerSideProps(context: any) {
     console.log(error);
     return {
       props: {
-        sort:'up',
+        sort:'down',
         categories: [],
         products: [],
         user,
