@@ -151,6 +151,7 @@ export default function Conta({ userServer }: any) {
                             duration: 9000,
                             isClosable: true,
                           });
+                          enableNotEdit(true)
                         })
                         .catch((err: any) => {
                           let message = err.message
