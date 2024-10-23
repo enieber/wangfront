@@ -438,7 +438,7 @@ const PrimaryMenu = (props: MenuProps) => {
                       colorScheme="black"
                       _hover={{ underline: "none", color: "primary.600" }}
                     >
-                      {user.name.split(" ")[0]}
+                      {user?.name?.split(" ")[0] ?? 'Sem nome'}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent w="200px">
