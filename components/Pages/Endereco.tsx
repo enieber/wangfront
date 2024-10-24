@@ -525,7 +525,12 @@ export default function Endereco() {
                     </Flex>
                   )}
                   <Flex direction={"column"} mx={4} gap={10} my={4}>
-                    <Flex justify={"center"} align={'start'} direction={"column"} gap={2}>
+                    <Flex
+                      justify={"center"}
+                      align={"start"}
+                      direction={"column"}
+                      gap={2}
+                    >
                       <Text
                         textTransform={"uppercase"}
                         color={"primary.600"}
@@ -556,6 +561,22 @@ export default function Endereco() {
                           </Highlight>
                           <Text>{`Bairro: ${address.neighborhood}`}</Text>
                           <Text>{`${address.city} - ${address.state}`}</Text>
+                          <Button
+                            onClick={() => {
+                              axios
+                                .delete("/api/address", {
+                                  params: { address_id: address.id },
+                                })
+                                .then(() => {
+                                  fetchAddress();
+                                })
+                                .catch((err: any) => {
+                                  console.log(err);
+                                });
+                            }}
+                          >
+                            Remover
+                          </Button>
                         </Card>
                       ))}
                     </SimpleGrid>

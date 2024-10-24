@@ -35,6 +35,17 @@ export default async function handler(request, res) {
         }
       );
       res.status(200).json(response.data);
+    } else if (request.method === "DELETE") {
+      const { address_id } = request.query;
+      const response = await axios.delete(
+        `${process.env.URL}/platform/delete-address/${address_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      res.status(200).json(response.data);
     } else {
       res.status(405).json({ message: "method not allow" });
     }
