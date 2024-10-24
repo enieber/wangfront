@@ -51,6 +51,7 @@ import * as Yup from "yup";
 import Select from "react-select";
 import { validateCNPJ, validateCPF } from "validations-br";
 import axios from "axios";
+import AddressListComponent from "../AddressList";
 
 enum Pessoa {
   fisica = "Fisica",
@@ -119,7 +120,7 @@ export default function Endereco() {
           const adapterAddress = res.data.map((item) => {
             return {
               ...item.addresses,
-              id: item.id,
+              id: item.address_id,
             };
           });
           setAddressList(adapterAddress);
@@ -550,36 +551,21 @@ export default function Endereco() {
                         {isAdding ? "Cancelar" : "Novo Enderço"}
                       </Button>
                     </Flex>
-                    <SimpleGrid columns={2} gap={5}>
-                      {addressList.map((address: any) => (
-                        <Card gap={5} p={10} key={address.id}>
-                          <Highlight
-                            query="spotlight"
-                            styles={{ px: "1", py: "1", bg: "orange.100" }}
-                          >
-                            {`${address.street} - Nº: ${address.number}`}
-                          </Highlight>
-                          <Text>{`Bairro: ${address.neighborhood}`}</Text>
-                          <Text>{`${address.city} - ${address.state}`}</Text>
-                          <Button
-                            onClick={() => {
-                              axios
-                                .delete("/api/address", {
-                                  params: { address_id: address.id },
-                                })
-                                .then(() => {
-                                  fetchAddress();
-                                })
-                                .catch((err: any) => {
-                                  console.log(err);
-                                });
-                            }}
-                          >
-                            Remover
-                          </Button>
-                        </Card>
-                      ))}
-                    </SimpleGrid>
+                    <AddressListComponent
+                      addressList={addressList}
+                      removeItem={(address_id: any) => {
+                        axios
+                          .delete("/api/address", {
+                            params: { address_id: address_id },
+                          })
+                          .then(() => {
+                            fetchAddress();
+                          })
+                          .catch((err: any) => {
+                            console.log(err);
+                          });
+                      }}
+                    />                    
                   </Flex>
                 </TabPanel>
               </TabPanels>

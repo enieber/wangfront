@@ -13,7 +13,7 @@ interface HomeProps {
   menus: any[];
 }
 
-export default function ContaPage({ user, menus }: HomeProps) {  
+export default function ContaPage({ user, menus }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
@@ -25,14 +25,13 @@ export default function ContaPage({ user, menus }: HomeProps) {
   );
 }
 
-export async function getServerProps(context: any) {
+export async function getServerSideProps(context: any) {
   let user = null;
   try {
     let headers = builderHeader(context);
     if (headers) {
       try {
         const response = await axios.get(`${process.env.URL}/platform/me`, headers)
-        console.log('res', response)
         user = response.data
       } catch (err) {
         context.res.setHeader('Set-Cookie', `authToken=; HttpOnly; Path=/;`);
@@ -43,7 +42,7 @@ export async function getServerProps(context: any) {
     const [menus] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
-    
+
     return {
       props: {
         menus: menus.data,
