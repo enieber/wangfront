@@ -30,12 +30,36 @@ const states = [
   { nome: "Tocantins", sigla: "TO" },
 ];
 
-export async function getData() {
-  const dataFormat = states.map((item) => {
+function adapterToSelect(item) {
     return {
         value: item.sigla,
         label: item.nome
     };    
-  });
+  
+}
+
+export async function getData() {
+  const dataFormat = states.map(adapterToSelect);
   return { data: dataFormat };
+}
+
+export default async function handler(request, res) {
+  try {
+    if (request.method === "GET") {      
+      const dataFormat = states.map(adapterToSelect);      
+      res.status(200).json({ data: dataFormat});
+    } else {
+      res.status(405).json({ message: "method not allow" });      
+    }
+  } catch (err: any) {
+    if (err.status !== 500) {
+      if (err.response) {
+        res.status(err.status).json({ message: err.response.data.message });        
+      } else {
+        res.status(500).json({ message: err.message });
+      }
+    } else {
+        res.status(500).json({ message: err.message });
+    }    
+  }
 }

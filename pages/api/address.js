@@ -22,13 +22,23 @@ export default async function handler(request, res) {
         }
       );
 
-      // Retorna as informações do usuário
       res.status(200).json(response.data);  
     } else if (request.method === "POST") {
-      const { id_product } = request.query;
+      const values = request.body;
+      const response = await axios.post(
+        `${process.env.URL}/platform/create-address/`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      res.status(200).json(response.data);
+    } else if (request.method === "DELETE") {
+      const { address_id } = request.query;
       const response = await axios.delete(
-        `${process.env.URL}/platform/remove-favorite/${id_product}`,
-        {},
+        `${process.env.URL}/platform/delete-address/${address_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -12,15 +12,14 @@ const Endereco = dynamic(() => import("../../components/Pages/Endereco"), {
 interface HomeProps {
   user: any;
   menus: any[];
-  states: any[];
 }
 
-export default function Login({ user, menus, states }: HomeProps) {
+export default function Login({ user, menus }: HomeProps) {
   return (
     <Layout menus={menus} user={user}>
       <Box w={"full"} bg={"#F5F5F5"} p={10}>
         <Box m={5}>
-          <Endereco states={states} />
+          <Endereco />
         </Box>
       </Box>
     </Layout>
@@ -41,15 +40,13 @@ export async function getStaticProps(context: any) {
         console.log(err)
       }
     } 
-    const [menus, states] = await Promise.all([
+    const [menus] = await Promise.all([
       axios.get(`${process.env.URL}/platform/get-categories`, headers),
-      getData(),
     ]);
 
     return {
       props: {
         menus: menus.data,
-        states: states.data,
         user,
       },
     };
@@ -57,7 +54,6 @@ export async function getStaticProps(context: any) {
     return {
       props: {
         menus: [],
-        states: [],
         user,
       },
     };
