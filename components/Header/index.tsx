@@ -40,6 +40,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import QuickCart from "../Cart/QuickCart";
 import { useAuth } from "../../context/AuthContext";
 import { set } from "react-hook-form";
+import { adapterToClient } from "../../helpers/adapter";
 
 export default function Header({ menus, userServer }: any) {
   const { login, logout, user, setUser, isLoading, aboutMe } = useAuth();
@@ -49,7 +50,7 @@ export default function Header({ menus, userServer }: any) {
     if (!userServer) {
       aboutMe();
     } else {
-      setUser(userServer);
+      setUser(adapterToClient(userServer));
     }
   }, []);
 

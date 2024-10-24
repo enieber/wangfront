@@ -95,7 +95,7 @@ export default function QuickCart({
                   _hover={{ bg: 'primary.600' }}
                   _active={{ bg: 'primary.700' }}
                   _focus={{ boxShadow: 'none' }}
-                  href="/carrinho"
+                  href="/finalizar-compra"
                 >
                   Finalizar compra
                 </Link>
