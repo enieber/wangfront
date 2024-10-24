@@ -104,7 +104,13 @@ export default function AccountForm({ user, updateUser }: AccountFormProps) {
   );
 
   return (
-    <Flex direction={"column"} mx={4} gap={10} my={4}>
+    <Flex
+      direction={"column"}
+      p={10}
+      gap={10}
+      background={"#FAFAFA"}
+      borderRadius={5}
+    >
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {

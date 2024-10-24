@@ -24,9 +24,8 @@ const AddressListComponent = ({
   const [selectedOption, setSelectedOption] = useState(undefined);
 
   function handleSelection(value: any) {
-    console.log(value)
-    // setSelectedOption(value);
-    // selectValue(addressList.find((item: any) => item.id == value));
+    setSelectedOption(value);
+    selectValue(addressList.find((item: any) => item.id == value));
   }
 
   if (isLoading) {
