@@ -51,7 +51,6 @@ enum PaymentMethod {
 const steps = [
   { title: "Produtos", description: "Lista de produtos" },
   { title: "Dados Pessoais", description: "Adicione dados de acesso" },
-  { title: "Endereço", description: "Adicione dados de endereço" },
   { title: "Pagamento", description: "Selecione forma de pagamento" },
 ];
 
@@ -182,7 +181,8 @@ export default function FinalizarCompra() {
           Finalizar Compra
         </Heading>
         <Container maxW={"container.xl"}>
-          <Stepper size={mobile ? "sm" : "md"} index={activeStep}>
+          
+          <Stepper size={"sm"} index={activeStep}>
             {steps.map((step, index) => (
               <Step key={index} onClick={() => setActiveStep(index + 1)}>
                 <StepIndicator>
@@ -228,18 +228,6 @@ export default function FinalizarCompra() {
                 </Heading>
               </Flex>
               <AccountForm user={user} updateUser={updateUser} />
-            </Flex>
-          )}
-          {activeStep == 3 && (
-            <Flex
-              w={{ base: "100%" }}
-              p={4}
-              border="1px solid"
-              borderColor="gray.200"
-              rounded="md"
-              flexDir="column"
-              gap={4}
-            >
               <Flex w="full" justify="space-between">
                 <Heading as={"h3"} size={"sm"}>
                   Endereço
@@ -257,6 +245,19 @@ export default function FinalizarCompra() {
                 shippingOptions={shippingOptions}
                 selectValue={(value: any) => addShipping(value)}
               />
+            </Flex>
+          )}
+          {activeStep == 3 && (
+            <Flex
+              w={{ base: "100%" }}
+              p={4}
+              border="1px solid"
+              borderColor="gray.200"
+              rounded="md"
+              flexDir="column"
+              gap={4}
+            >
+              
             </Flex>
           )}
           {activeStep == 1 && (
@@ -290,7 +291,7 @@ export default function FinalizarCompra() {
               )}
             </Flex>
           )}
-          {activeStep == 4 && (
+          {activeStep == 3 && (
             <Flex>
               {cartItems.length > 0 ? (
                 <Flex gap={10} wrap={"wrap"}>
@@ -330,7 +331,7 @@ export default function FinalizarCompra() {
           </Button>
           <Button
             colorScheme="blue"
-            disabled={activeStep === 4}
+            disabled={activeStep === 3}
             onClick={goToNext}
             w={mobile ? "90%" : "50%"}
             textAlign={"center"}
@@ -442,7 +443,7 @@ export default function FinalizarCompra() {
               {formatMoney(totalCart)}
             </Text>
           </Flex>
-          {activeStep === 4 ? (
+          {activeStep === 3 ? (
             <Button
               type="submit"
               colorScheme="blue"
