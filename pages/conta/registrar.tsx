@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getData } from "../api/states";
 import dynamic from "next/dynamic";
 import Layout from "../../components/Layout";
+import { builderHeader } from "../../helpers/header";
 
 interface RegisterProps {
   user: any;
@@ -28,30 +29,24 @@ export default function Register({ user, menus, states }: RegisterProps) {
 }
 
 export async function getServerSideProps(context: any) {
+  let user = null;
   try {
-    const [menus, states] = await Promise.all([
-      axios.get(`/api/categories`),
-      getData(),
+    let headers = builderHeader(context); 
+    const [menus] = await Promise.all([
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
-
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=3600, stale-while-revalidate=59'
-    );
 
     return {
       props: {
         menus: menus.data,
-        user: null,
-        states: states.data,
+        user,
       },
     };
   } catch (error) {
     return {
       props: {
         menus: [],
-        user: null,
-        states: [],
+        user,
       },
     };
   }

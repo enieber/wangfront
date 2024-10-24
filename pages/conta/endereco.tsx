@@ -26,7 +26,7 @@ export default function Login({ user, menus }: HomeProps) {
   );
 }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   let user = null;
   try {
     let headers = builderHeader(context);

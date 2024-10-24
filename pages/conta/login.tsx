@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import axios from 'axios';
 import Layout from "../../components/Layout";
+import { builderHeader } from "../../helpers/header";
 
 interface HomeProps {
   user: any;
@@ -20,22 +21,24 @@ export default function LoginPage({ user, menus }: HomeProps) {
 }
 
 export async function getServerSideProps(context: any) {
+  let user = null;
   try {
+    let headers = builderHeader(context); 
     const [menus] = await Promise.all([
-      axios.get(`/api/categories`),
+      axios.get(`${process.env.URL}/platform/get-categories`, headers),
     ]);
-    
+
     return {
       props: {
         menus: menus.data,
-        user: null,
+        user,
       },
     };
   } catch (error) {
     return {
       props: {
         menus: [],
-        user: null,
+        user,
       },
     };
   }
