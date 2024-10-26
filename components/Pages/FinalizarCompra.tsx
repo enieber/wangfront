@@ -43,11 +43,12 @@ import CartItem from "../Cart/CartItem";
 import ShippingList from "../ShippingList";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import PaymentPix from "../PaymentPix";
+import CountdownTimer from "../CountdownTimer";
+import { useRouter } from "next/router";
 
 enum PaymentMethod {
   creditCard = "creditCard",
   pix = "pix",
-  boleto = "boleto",
 }
 
 const steps = [
@@ -83,6 +84,7 @@ export default function FinalizarCompra() {
     addShipping,
     delivery,
   } = useCart();
+  const router = useRouter();
 
   const [addressSelected, selectAddress] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
@@ -113,8 +115,8 @@ export default function FinalizarCompra() {
       });
   }
 
-  const [transaction, setTransaction] =useState<any>(null);
- 
+  const [transaction, setTransaction] = useState<any>(null);
+
   const [state, setState] = useState({
     number: "",
     expiry: "",
@@ -158,6 +160,74 @@ export default function FinalizarCompra() {
           console.log("error", err);
         });
     }
+  }
+
+  function makePayment(method, PaymentObject, retry=false) {    
+    const dataToPayment = {
+      IsSandbox: false,
+      Application: "Aplicação de teste",
+      Vendor: "João da Silva",
+      PaymentMethod: method,
+      idAdress: addressSelected.id,
+      Customer: {
+        Name: user.name,
+        Identity: user.document,
+        Phone: user.phone_number,
+        Email: user.email,
+        idAdress: addressSelected.id,
+        Address: {
+          idAdress: addressSelected.id,
+          ZipCode: addressSelected.zip_code,
+          Street: addressSelected.street,
+          Number: `${addressSelected.number}`,
+          Complement: addressSelected.additional_info,
+          District: addressSelected.neighborhood,
+          CityName: addressSelected.city,
+          StateInitials: addressSelected.state,
+          CountryName: addressSelected.country,
+        },
+      },
+      Products: cartItems.map((item) => {
+        return {
+          id: item.id,
+          quantity: item.quantity,
+        };
+      }),
+      PaymentObject: PaymentObject,
+      ChargeZipCode: delivery,
+    };
+    if (retry) {
+      const retrySales = {
+        transactionId: transaction.IdTransaction,
+        products: dataToPayment.Products
+      }
+      setTransaction({ loading: true });
+      axios
+      .post(`/api/payment?retry=1`, retrySales)
+      .then((res) => {
+        setTransaction({
+          loading: false,
+          ...res.data.data.ResponseDetail,
+        });
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+    } else {
+      setTransaction({ loading: true });
+      axios
+      .post(`/api/payment?retry=0`, dataToPayment)
+      .then((res) => {
+        setTransaction({
+          loading: false,
+          ...res.data.data.ResponseDetail,
+        });
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+    }
+    
   }
 
   useEffect(() => {
@@ -273,7 +343,6 @@ export default function FinalizarCompra() {
                   Cartão de crédito
                 </Radio>
                 <Radio value={PaymentMethod.pix}>Pix</Radio>
-                <Radio value={PaymentMethod.boleto}>Boleto</Radio>
               </Flex>
             </RadioGroup>
             {paymentMethod === PaymentMethod.creditCard && (
@@ -428,69 +497,40 @@ export default function FinalizarCompra() {
               </Flex>
             )}
             {paymentMethod === PaymentMethod.pix && (
-              <Flex w="full" gap={6} direction="column">
+              <Flex
+                w="full"
+                gap={6}
+                direction="column"
+                justifyContent={"center"}
+              >
                 <Text fontSize="sm">
                   Clicando em efetuar pagamento, você receberá o QRCode e terá
-                  2h para efetuar o pagamento via PIX..
+                  5 minutos para efetuar o pagamento via PIX..
                 </Text>
                 <Button
+                  isLoading={transaction?.loading}
+                  disabled={transaction?.Status == "1"}
                   onClick={() => {
-                    const dataToPayment = {
-                      IsSandbox: false,
-                      Application: "Aplicação de teste",
-                      Vendor: "João da Silva",
-                      PaymentMethod: "6",
-                      idAdress: addressSelected.id,
-                      Customer: {
-                        Name: user.name,
-                        Identity: user.document,
-                        Phone: user.phone_number,
-                        Email: user.email,
-                        idAdress: addressSelected.id,
-                        Address: {
-                          idAdress: addressSelected.id,
-                          ZipCode: addressSelected.zip_code,
-                          Street: addressSelected.street,
-                          Number: `${addressSelected.number}`,
-                          Complement: addressSelected.additional_info,
-                          District: addressSelected.neighborhood,
-                          CityName: addressSelected.city,
-                          StateInitials: addressSelected.state,
-                          CountryName: addressSelected.country,
-                        },
-                      },
-                      Products: cartItems.map((item) => {
-                        return {
-                          id: item.id,
-                          quantity: item.quantity,
-                        };
-                      }),
-                      PaymentObject: {
-                        buyerId: 15,
-                      },
-                      ChargeZipCode: delivery,
-                    };
-                    axios
-                      .post("/api/payment", dataToPayment)
-                      .then((res) => {
-                        setTransaction(res.data.data.ResponseDetail)
-                      })
-                      .catch((err) => {
-                        console.log("err", err);
-                      });
+                    makePayment("6", { buyerId: 15 });
                   }}
                 >
                   Fazer pagamento
                 </Button>
-                {transaction && (<PaymentPix transaction={transaction}/>)}
-              </Flex>
-            )}
-            {paymentMethod === PaymentMethod.boleto && (
-              <Flex w="full" gap={6}>
-                <Text fontSize="sm">
-                  Clicando em efetuar pagamento, você terá acesso ao boleto e 3
-                  dias para efetuar o pagamento.
-                </Text>
+                {transaction?.Status == "1"  && (
+                  <Flex direction={"column"} justify="center">
+                    <PaymentPix
+                      transaction={transaction}                     
+                    />
+                    <CountdownTimer
+                      action={() => {
+                        setTransaction({...transaction, Status: -1})
+                        // if (hasSuccessPayment) {
+                        //   router.push('/conta');
+                        // }
+                      }}
+                    />
+                  </Flex>
+                )}
               </Flex>
             )}
           </Flex>
