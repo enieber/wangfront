@@ -89,7 +89,7 @@ export default function FinalizarCompra() {
   const [orderId, setOrderId] = useState(-1);
   const [addressSelected, selectAddress] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
-    PaymentMethod.creditCard
+    PaymentMethod.pix
   );
 
   const { activeStep, setActiveStep, goToNext, goToPrevious } = useSteps({
@@ -336,6 +336,7 @@ export default function FinalizarCompra() {
             </Heading>
 
             <RadioGroup
+              isDisabled
               onChange={(value) => setPaymentMethod(value as PaymentMethod)}
               value={paymentMethod}
             >
