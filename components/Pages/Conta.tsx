@@ -23,6 +23,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Favoritos from "./Favorito";
 import AccountForm from "../AccountForm";
+import Pedidos from "./Pedidos";
 
 
 export default function Conta({ userServer }: any) {
@@ -86,9 +87,7 @@ export default function Conta({ userServer }: any) {
                     alignItems={"center"}
                     justifyContent={"center"}
                   >
-                    <Text fontSize={"sm"} fontWeight={"400"}>
-                      Nenhum pedido encontrado
-                    </Text>
+                    <Pedidos />
                   </Flex>
                 </TabPanel>
                 <TabPanel>

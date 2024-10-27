@@ -16,9 +16,8 @@ export default async function handler(
       const { retry } = req.query;
       const values = req.body;
       if (retry==1) {
-        const response = await axios.put(
-          `${process.env.URL}/platform/re-payment`,
-          values,
+        const response = await axios.get(
+          `${process.env.URL}/platform/get-sales-status/${values.orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -42,7 +41,16 @@ export default async function handler(
       res.status(405).json({ name: "method not allow" });
     }
   } catch (err ) {
-    console.log(err)
-    res.status(500).json({ name: "Error pagamento" });
+    console.log(err);
+    if (err.status !== 500) {
+      if (err.response) {
+        res.status(err.status).json({ message: err.response.data.message });
+      } else {
+        res.status(500).json({ message: err.message });
+      }
+    } else {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    }
   }
 }

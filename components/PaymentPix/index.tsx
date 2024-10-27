@@ -7,10 +7,23 @@ import {
   Icon,
   Flex,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { FaCopy } from "react-icons/fa";
 
 export default function PaymentPix({ transaction, retry }: any) {
   const { hasCopied, onCopy } = useClipboard(transaction.Key);
+
+  useEffect(() => {
+    const fetchTransactionStatus = () => {
+      retry();
+    };
+
+    // Configura o intervalo para chamar a função a cada 10 segundos
+    const intervalId = setInterval(fetchTransactionStatus, 10000);
+
+    // Limpa o intervalo ao desmontar o componente
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <Flex justifyContent="center">

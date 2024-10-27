@@ -83,9 +83,10 @@ export default function FinalizarCompra() {
     setQuantity,
     addShipping,
     delivery,
+    clearCart,
   } = useCart();
   const router = useRouter();
-
+  const [orderId, setOrderId] = useState(-1);
   const [addressSelected, selectAddress] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     PaymentMethod.creditCard
@@ -162,72 +163,72 @@ export default function FinalizarCompra() {
     }
   }
 
-  function makePayment(method, PaymentObject, retry=false) {    
-    const dataToPayment = {
-      IsSandbox: false,
-      Application: "Aplicação de teste",
-      Vendor: "João da Silva",
-      PaymentMethod: method,
-      idAdress: addressSelected.id,
-      Customer: {
-        Name: user.name,
-        Identity: user.document,
-        Phone: user.phone_number,
-        Email: user.email,
-        idAdress: addressSelected.id,
-        Address: {
-          idAdress: addressSelected.id,
-          ZipCode: addressSelected.zip_code,
-          Street: addressSelected.street,
-          Number: `${addressSelected.number}`,
-          Complement: addressSelected.additional_info,
-          District: addressSelected.neighborhood,
-          CityName: addressSelected.city,
-          StateInitials: addressSelected.state,
-          CountryName: addressSelected.country,
-        },
-      },
-      Products: cartItems.map((item) => {
-        return {
-          id: item.id,
-          quantity: item.quantity,
-        };
-      }),
-      PaymentObject: PaymentObject,
-      ChargeZipCode: delivery,
-    };
+  function makePayment(method, PaymentObject, retry = false) {
     if (retry) {
       const retrySales = {
-        transactionId: transaction.IdTransaction,
-        products: dataToPayment.Products
+        orderId,
+      };
+      if (orderId != -1) {
+        axios
+          .post(`/api/payment?retry=1`, retrySales)
+          .then((res) => {
+            if (res.data.status === "confirmed") {
+              clearCart();
+              router.push("/payment-ok");
+            }
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
       }
-      setTransaction({ loading: true });
-      axios
-      .post(`/api/payment?retry=1`, retrySales)
-      .then((res) => {
-        setTransaction({
-          loading: false,
-          ...res.data.data.ResponseDetail,
-        });
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
     } else {
+      const dataToPayment = {
+        IsSandbox: false,
+        Application: "Aplicação de teste",
+        Vendor: "João da Silva",
+        PaymentMethod: method,
+        idAdress: addressSelected.id,
+        Customer: {
+          Name: user.name,
+          Identity: user.document,
+          Phone: user.phone_number,
+          Email: user.email,
+          idAdress: addressSelected.id,
+          Address: {
+            idAdress: addressSelected.id,
+            ZipCode: addressSelected.zip_code,
+            Street: addressSelected.street,
+            Number: `${addressSelected.number}`,
+            Complement: addressSelected.additional_info,
+            District: addressSelected.neighborhood,
+            CityName: addressSelected.city,
+            StateInitials: addressSelected.state,
+            CountryName: addressSelected.country,
+          },
+        },
+        Products: cartItems.map((item) => {
+          return {
+            id: item.id,
+            quantity: item.quantity,
+          };
+        }),
+        PaymentObject: PaymentObject,
+        ChargeZipCode: delivery,
+      };
       setTransaction({ loading: true });
       axios
-      .post(`/api/payment?retry=0`, dataToPayment)
-      .then((res) => {
-        setTransaction({
-          loading: false,
-          ...res.data.data.ResponseDetail,
+        .post(`/api/payment?retry=0`, dataToPayment)
+        .then((res) => {
+          setOrderId(res.data.id);
+          setTransaction({
+            loading: false,
+            ...res.data.data.ResponseDetail,
+          });
+        })
+        .catch((err) => {
+          console.log("err", err);
         });
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
     }
-    
   }
 
   useEffect(() => {
@@ -504,8 +505,8 @@ export default function FinalizarCompra() {
                 justifyContent={"center"}
               >
                 <Text fontSize="sm">
-                  Clicando em efetuar pagamento, você receberá o QRCode e terá
-                  5 minutos para efetuar o pagamento via PIX..
+                  Clicando em efetuar pagamento, você receberá o QRCode e terá 5
+                  minutos para efetuar o pagamento via PIX..
                 </Text>
                 <Button
                   isLoading={transaction?.loading}
@@ -516,14 +517,15 @@ export default function FinalizarCompra() {
                 >
                   Fazer pagamento
                 </Button>
-                {transaction?.Status == "1"  && (
+                {transaction?.Status == "1" && (
                   <Flex direction={"column"} justify="center">
                     <PaymentPix
-                      transaction={transaction}                     
+                      transaction={transaction}
+                      retry={() => makePayment("6", {}, true)}
                     />
                     <CountdownTimer
                       action={() => {
-                        setTransaction({...transaction, Status: -1})
+                        setTransaction({ ...transaction, Status: -1 });
                         // if (hasSuccessPayment) {
                         //   router.push('/conta');
                         // }
