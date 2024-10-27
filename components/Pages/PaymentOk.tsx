@@ -1,4 +1,4 @@
-import { Box, Text, Button, Icon } from '@chakra-ui/react';
+import { Box, Text, Button, Icon, Flex } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 
@@ -6,10 +6,11 @@ const PaymentSuccess = () => {
   const router = useRouter();
 
   const handleRedirect = () => {
-    router.push('/account');
+    router.push('/conta');
   };
 
   return (
+    <Flex justifyContent={"center"}>
     <Box 
       borderWidth="1px" 
       borderRadius="md" 
@@ -30,6 +31,7 @@ const PaymentSuccess = () => {
         Ir para Minha Conta
       </Button>
     </Box>
+    </Flex>
   );
 };
 
